@@ -32,3 +32,12 @@ repositories {
     mavenCentral()
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
 }
+
+tasks.register<JavaExec>("runAgentMesh") {
+    group = "application"
+    description = "Runs the Agent Mesh example"
+    mainClass.set("io.github.a2a_4k.AgentMeshKt")
+    val compilation = kotlin.targets.getByName("jvm").compilations.getByName("main")
+    classpath = compilation.output.allOutputs + compilation.runtimeDependencyFiles
+    dependsOn(compilation.compileKotlinTaskName)
+}
