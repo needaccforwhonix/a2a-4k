@@ -32,3 +32,17 @@ repositories {
     mavenCentral()
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
 }
+
+tasks.register<JavaExec>("runAgentMesh") {
+    group = "application"
+    description = "Run the Agent Mesh example"
+    mainClass.set("AgentMeshKt")
+
+    val jvmMain = kotlin.targets.getByName("jvm").compilations.getByName("main")
+    classpath(jvmMain.output.allOutputs, jvmMain.runtimeDependencyFiles)
+
+    // Set environment variables here if needed or require them from environment
+    if (System.getenv("OPENAI_API_KEY") != null) {
+        environment("OPENAI_API_KEY", System.getenv("OPENAI_API_KEY"))
+    }
+}
