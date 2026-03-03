@@ -27,6 +27,14 @@ kotlin {
     }
 }
 
+tasks.register<JavaExec>("runAgentMesh") {
+    mainClass.set("AgentMeshKt")
+    val jvmMain = kotlin.targets.getByName("jvm").compilations.getByName("main")
+    val outputFiles = jvmMain.output.classesDirs
+    val runtimeDeps = jvmMain.runtimeDependencyFiles ?: files()
+    classpath = outputFiles + runtimeDeps
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
