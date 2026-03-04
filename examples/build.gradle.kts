@@ -27,6 +27,17 @@ kotlin {
     }
 }
 
+tasks.register<JavaExec>("runAgentMesh") {
+    group = "application"
+    mainClass.set("io.github.a2a_4k.examples.AgentMeshKt")
+    val jvmCompilations = kotlin.targets.getByName("jvm").compilations.getByName("main")
+    classpath(jvmCompilations.output.allOutputs)
+    classpath(jvmCompilations.runtimeDependencyFiles)
+
+    // Add LangChain4j env variables if needed
+    environment("OPENAI_API_KEY", System.getenv("OPENAI_API_KEY") ?: "demo")
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
