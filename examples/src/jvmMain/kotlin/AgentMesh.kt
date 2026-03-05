@@ -73,9 +73,11 @@ abstract class AlphaEvolveAgent(
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
                 Analyze the following context and propose an initial response or action plan as $id.
-                You are participating in an agent mesh. Your output must explicitly and unambiguously
-                describe 'what', 'where', and 'how' the task is intended. Focus on prioritizing
-                security, performance, style, documentation, cleanliness, and order.
+                You are participating in an agent mesh where everything operates asynchronously and in parallel.
+                Your output must explicitly and unambiguously describe 'WHAT', 'WHERE', and 'HOW' the task is intended.
+                Always offer to help clarify or refine the goals.
+                Focus on prioritizing and optimizing for security, performance, style, documentation, cleanliness, and order.
+                Ensure the task is developed further and kept up to date.
 
                 $context
             """.trimIndent()
@@ -84,9 +86,10 @@ abstract class AlphaEvolveAgent(
 
             // Step 2: Critique the draft
             val critiquePrompt = """
-                Critique the following draft response to ensure it adheres to security, performance,
+                Critique the following draft response to ensure it adheres to the highest standards of security, performance,
                 style, documentation, cleanliness, and order. Identify any ambiguities regarding
-                'what', 'where', and 'how' the task is intended.
+                'WHAT', 'WHERE', and 'HOW' the task is intended. Ensure the draft supports asynchronous, parallel development
+                and offers proactive help to refine the ongoing work.
 
                 Context: $context
 
@@ -99,9 +102,10 @@ abstract class AlphaEvolveAgent(
             // Step 3: Refine based on critique
             val refinePrompt = """
                 Refine the initial draft based on the critique to produce the final, unambiguous output.
-                The final output must explicitly and unambiguously describe 'what', 'where', and 'how'
-                the task is intended, and must prioritize security, performance, style, documentation,
-                cleanliness, and order.
+                The final output must explicitly and unambiguously describe 'WHAT', 'WHERE', and 'HOW'
+                the task is intended. It must optimize for security, performance, style, documentation,
+                cleanliness, and order, while supporting an asynchronous, parallel workflow. Proactively
+                offer help and ensure the result drives further development and remains current.
 
                 Draft:
                 $draft
@@ -134,6 +138,7 @@ abstract class AlphaEvolveAgent(
 
     private suspend fun callModel(prompt: String): String = withContext(Dispatchers.IO) {
         try {
+            if (apiKey == "demo") delay(3000)
             model.chat(prompt)
         } catch (e: Exception) {
             "Simulated response due to model error: ${e.message}. Processing prompt: ${prompt.take(30)}..."
@@ -200,7 +205,7 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for a while
-    delay(15000)
+    delay(60000)
 
     println("Agent Mesh Session Completed.")
 
