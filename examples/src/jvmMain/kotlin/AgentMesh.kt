@@ -56,37 +56,58 @@ abstract class AlphaEvolveAgent(
         .build()
 
     override suspend fun start(mesh: MeshNetwork) {
-        println("[$id] Started and listening for topics: $topicsOfInterest")
+        println("[$id] Started and listening to all messages")
         mesh.messages
-            .filter { it.topic in topicsOfInterest && it.senderId != id }
+            .filter { it.senderId != id }
             .collect { message ->
-                println("[$id] Received message from ${message.senderId} on ${message.topic}")
-                processMessage(message, mesh)
+                // Do not block the flow collection
+                CoroutineScope(Dispatchers.Default).launch {
+                    processMessage(message, mesh)
+                }
             }
     }
 
     private suspend fun processMessage(message: MeshMessage, mesh: MeshNetwork) {
         try {
+            // First decide if we should react based on agent's role
+            val shouldReactPrompt = """
+                You are $id, an autonomous agent in a broadcast agent mesh.
+                Your general areas of interest are: ${topicsOfInterest.joinToString(", ")}.
+                A message was broadcasted by ${message.senderId} on topic '${message.topic}'.
+                Content: ${message.content}
+
+                Evaluate if this message requires your attention or contribution as $id.
+                Reply with 'YES' if you should react and can contribute meaningfully, or 'NO' if you should ignore it.
+            """.trimIndent()
+
+            val shouldReactResponse = callModel(shouldReactPrompt)
+            if (!shouldReactResponse.contains("YES", ignoreCase = true)) {
+                return
+            }
+
+            println("[$id] Decided to react to message from ${message.senderId} on ${message.topic}")
+
             // AlphaEvolve Algorithm: Reasoning, Critiquing, and Refining
             val context = "Context: Message from ${message.senderId} on ${message.topic}. Content: ${message.content}"
 
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
                 Analyze the following context and propose an initial response or action plan as $id.
-                You are participating in an agent mesh. Your output must explicitly and unambiguously
-                describe 'what', 'where', and 'how' the task is intended. Focus on prioritizing
-                security, performance, style, documentation, cleanliness, and order.
+                You are participating in an agent mesh where all agents work asynchronously and in parallel.
+                Your input and output must explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                Always proactively offer help to clarify ambiguous tasks to keep the system continuously evolving and up-to-date.
+                Focus on prioritizing security, performance, style, documentation, cleanliness, and order.
 
                 $context
             """.trimIndent()
             val draft = callModel(draftPrompt)
-            println("[$id] AlphaEvolve Draft: ${draft.take(50).replace("\n", " ")}...")
+            println("[$id] AlphaEvolve Draft generated.")
 
             // Step 2: Critique the draft
             val critiquePrompt = """
                 Critique the following draft response to ensure it adheres to security, performance,
                 style, documentation, cleanliness, and order. Identify any ambiguities regarding
-                'what', 'where', and 'how' the task is intended.
+                'what', 'where', and 'how' the task is intended. Check if help was proactively offered.
 
                 Context: $context
 
@@ -94,14 +115,14 @@ abstract class AlphaEvolveAgent(
                 $draft
             """.trimIndent()
             val critique = callModel(critiquePrompt)
-            println("[$id] AlphaEvolve Critique: ${critique.take(50).replace("\n", " ")}...")
+            println("[$id] AlphaEvolve Critique generated.")
 
             // Step 3: Refine based on critique
             val refinePrompt = """
                 Refine the initial draft based on the critique to produce the final, unambiguous output.
                 The final output must explicitly and unambiguously describe 'what', 'where', and 'how'
-                the task is intended, and must prioritize security, performance, style, documentation,
-                cleanliness, and order.
+                the task is intended, and must proactively offer help if needed.
+                It must prioritize security, performance, style, documentation, cleanliness, and order.
 
                 Draft:
                 $draft
@@ -134,6 +155,9 @@ abstract class AlphaEvolveAgent(
 
     private suspend fun callModel(prompt: String): String = withContext(Dispatchers.IO) {
         try {
+            if (apiKey == "demo") {
+                delay(3000)
+            }
             model.chat(prompt)
         } catch (e: Exception) {
             "Simulated response due to model error: ${e.message}. Processing prompt: ${prompt.take(30)}..."
@@ -200,7 +224,7 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for a while
-    delay(15000)
+    delay(65000)
 
     println("Agent Mesh Session Completed.")
 
