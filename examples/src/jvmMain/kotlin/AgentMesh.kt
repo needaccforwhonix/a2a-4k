@@ -23,7 +23,7 @@ data class MeshMessage(
 
 interface MeshAgent {
     val id: String
-    val topicsOfInterest: Set<String>
+    val roleDescription: String
     suspend fun start(mesh: MeshNetwork)
 }
 
@@ -39,7 +39,7 @@ class MeshNetwork(val scope: CoroutineScope) {
 
 abstract class AlphaEvolveAgent(
     override val id: String,
-    override val topicsOfInterest: Set<String>,
+    override val roleDescription: String,
     private val apiKey: String,
 ) : MeshAgent {
     // using open ai model with a demo key for simulation or real one if provided
@@ -56,26 +56,45 @@ abstract class AlphaEvolveAgent(
         .build()
 
     override suspend fun start(mesh: MeshNetwork) {
-        println("[$id] Started and listening for topics: $topicsOfInterest")
+        println("[$id] Started and listening to all broadcasts. Role: $roleDescription")
         mesh.messages
-            .filter { it.topic in topicsOfInterest && it.senderId != id }
+            .filter { it.senderId != id }
             .collect { message ->
-                println("[$id] Received message from ${message.senderId} on ${message.topic}")
-                processMessage(message, mesh)
+                // Process each message asynchronously so we don't block the shared flow
+                mesh.scope.launch {
+                    processMessage(message, mesh)
+                }
             }
     }
 
     private suspend fun processMessage(message: MeshMessage, mesh: MeshNetwork) {
         try {
+            // Self-filtering: evaluate if this agent should process the message
+            val evalPrompt = """
+                You are $id. Your role is: $roleDescription
+                A message was broadcast by ${message.senderId} on the topic "${message.topic}".
+                Message content: "${message.content}"
+
+                Based on your role, should you actively react to this message?
+                Answer strictly with YES or NO.
+            """.trimIndent()
+
+            val shouldReactResponse = callModel(evalPrompt).trim()
+            if (!shouldReactResponse.equals("YES", ignoreCase = true)) {
+                return // Ignored
+            }
+
+            println("[$id] Decided to process message from ${message.senderId} on ${message.topic}")
+
             // AlphaEvolve Algorithm: Reasoning, Critiquing, and Refining
             val context = "Context: Message from ${message.senderId} on ${message.topic}. Content: ${message.content}"
 
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
-                Analyze the following context and propose an initial response or action plan as $id.
+                Analyze the following context and propose an initial response or action plan as $id with the role: $roleDescription.
                 You are participating in an agent mesh. Your output must explicitly and unambiguously
                 describe 'what', 'where', and 'how' the task is intended. Focus on prioritizing
-                security, performance, style, documentation, cleanliness, and order.
+                security, performance, style, documentation, cleanliness, and order. Feel free to ask questions or proactively offer help to clarify ambiguous tasks.
 
                 $context
             """.trimIndent()
@@ -86,7 +105,7 @@ abstract class AlphaEvolveAgent(
             val critiquePrompt = """
                 Critique the following draft response to ensure it adheres to security, performance,
                 style, documentation, cleanliness, and order. Identify any ambiguities regarding
-                'what', 'where', and 'how' the task is intended.
+                'what', 'where', and 'how' the task is intended. The feedback should ensure the mesh continuously evolves and stays up-to-date.
 
                 Context: $context
 
@@ -103,6 +122,10 @@ abstract class AlphaEvolveAgent(
                 the task is intended, and must prioritize security, performance, style, documentation,
                 cleanliness, and order.
 
+                IMPORTANT: You must determine the next topic for broadcast to continue the mesh execution.
+                End your response exactly with a new line containing ONLY:
+                NEXT_TOPIC: <topic_name>
+
                 Draft:
                 $draft
 
@@ -112,19 +135,30 @@ abstract class AlphaEvolveAgent(
             val finalOutput = callModel(refinePrompt)
             println("[$id] AlphaEvolve Final Output Generated.")
 
-            // Determine next topic based on agent type (simple routing)
-            val nextTopic = determineNextTopic(message.topic)
+            // Determine next topic by parsing the output
+            val nextTopicRegex = Regex("""NEXT_TOPIC:\s*(.+)""")
+            val matchResult = nextTopicRegex.find(finalOutput)
+            val nextTopic = matchResult?.groupValues?.get(1)?.trim()
 
             if (nextTopic != null) {
+                // Strip the NEXT_TOPIC line from the content
+                val cleanContent = finalOutput.replace(nextTopicRegex, "").trim()
                 mesh.broadcast(
                     MeshMessage(
                         senderId = id,
                         topic = nextTopic,
-                        content = finalOutput,
+                        content = cleanContent,
                     ),
                 )
             } else {
-                println("[$id] Processing complete. No further broadcast.")
+                println("[$id] Processing complete. No next topic found in output. Broadcasting on 'general' topic as fallback.")
+                mesh.broadcast(
+                    MeshMessage(
+                        senderId = id,
+                        topic = "general",
+                        content = finalOutput,
+                    ),
+                )
             }
         } catch (e: Exception) {
             println("[$id] Error processing message: ${e.message}")
@@ -134,42 +168,33 @@ abstract class AlphaEvolveAgent(
 
     private suspend fun callModel(prompt: String): String = withContext(Dispatchers.IO) {
         try {
+            if (apiKey == "demo") {
+                delay(3000) // Prevent RateLimitException for demo key
+            }
             model.chat(prompt)
         } catch (e: Exception) {
             "Simulated response due to model error: ${e.message}. Processing prompt: ${prompt.take(30)}..."
         }
     }
-
-    abstract fun determineNextTopic(currentTopic: String): String?
 }
 
-class PlannerAgent(apiKey: String) : AlphaEvolveAgent("PlannerAgent", setOf("user_request", "code_review"), apiKey) {
-    override fun determineNextTopic(currentTopic: String): String? {
-        return when (currentTopic) {
-            "user_request" -> "plan_created"
-            "code_review" -> "plan_updated"
-            else -> null
-        }
-    }
-}
+class PlannerAgent(apiKey: String) : AlphaEvolveAgent(
+    "PlannerAgent",
+    "I analyze requests, design plans, and specify tasks unambiguously. If I receive code review feedback, I update the plan.",
+    apiKey,
+)
 
-class ExecutorAgent(apiKey: String) : AlphaEvolveAgent("ExecutorAgent", setOf("plan_created", "plan_updated"), apiKey) {
-    override fun determineNextTopic(currentTopic: String): String? {
-        return when (currentTopic) {
-            "plan_created", "plan_updated" -> "code_executed"
-            else -> null
-        }
-    }
-}
+class ExecutorAgent(apiKey: String) : AlphaEvolveAgent(
+    "ExecutorAgent",
+    "I write clean, secure, performant, and well-documented code based on a provided plan. I execute plans and report the code written.",
+    apiKey,
+)
 
-class CriticAgent(apiKey: String) : AlphaEvolveAgent("CriticAgent", setOf("code_executed"), apiKey) {
-    override fun determineNextTopic(currentTopic: String): String? {
-        return when (currentTopic) {
-            "code_executed" -> "code_review" // loops back to planner or finalize
-            else -> null
-        }
-    }
-}
+class CriticAgent(apiKey: String) : AlphaEvolveAgent(
+    "CriticAgent",
+    "I critically evaluate executed code for security, performance, style, cleanliness, order, and documentation. I provide feedback or approve it.",
+    apiKey,
+)
 
 fun main() = runBlocking {
     val apiKey = System.getenv("OPENAI_API_KEY") ?: "demo"
@@ -200,7 +225,7 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for a while
-    delay(15000)
+    delay(65000)
 
     println("Agent Mesh Session Completed.")
 
