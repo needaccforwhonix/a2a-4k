@@ -92,9 +92,10 @@ abstract class AlphaEvolveAgent(
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
                 Analyze the following context and propose an initial response or action plan as $id with the role: $roleDescription.
-                You are participating in an agent mesh. Your output must explicitly and unambiguously
-                describe 'what', 'where', and 'how' the task is intended. Focus on prioritizing
-                security, performance, style, documentation, cleanliness, and order. Feel free to ask questions or proactively offer help to clarify ambiguous tasks.
+                You are participating in an agent mesh. Apply Agentic Context Engineering and the AlphaEvolve algorithm with deep reasoning and full context.
+                Your output must explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                Strictly prioritize Security, Performance, Style, Documentation, Cleanliness, and Order.
+                Proactively offer help and support asynchronous parallel development. Feel free to ask questions or proactively offer help to clarify ambiguous tasks.
 
                 $context
             """.trimIndent()
@@ -103,9 +104,10 @@ abstract class AlphaEvolveAgent(
 
             // Step 2: Critique the draft
             val critiquePrompt = """
-                Critique the following draft response to ensure it adheres to security, performance,
-                style, documentation, cleanliness, and order. Identify any ambiguities regarding
-                'what', 'where', and 'how' the task is intended. The feedback should ensure the mesh continuously evolves and stays up-to-date.
+                Critique the following draft response applying Agentic Context Engineering and the AlphaEvolve algorithm with deep reasoning and full context.
+                Ensure it strictly adheres to Security, Performance, Style, Documentation, Cleanliness, and Order.
+                Identify any ambiguities regarding explicitly and unambiguously describing 'what', 'where', and 'how' the task is intended.
+                The feedback should proactively offer help, support asynchronous parallel development, ensure the mesh continuously evolves, and stays up-to-date.
 
                 Context: $context
 
@@ -117,10 +119,10 @@ abstract class AlphaEvolveAgent(
 
             // Step 3: Refine based on critique
             val refinePrompt = """
-                Refine the initial draft based on the critique to produce the final, unambiguous output.
-                The final output must explicitly and unambiguously describe 'what', 'where', and 'how'
-                the task is intended, and must prioritize security, performance, style, documentation,
-                cleanliness, and order.
+                Refine the initial draft based on the critique applying Agentic Context Engineering and the AlphaEvolve algorithm with deep reasoning and full context.
+                The final output must explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                Strictly prioritize Security, Performance, Style, Documentation, Cleanliness, and Order.
+                Ensure you proactively offer help and support asynchronous parallel development to keep everything evolving and up-to-date.
 
                 IMPORTANT: You must determine the next topic for broadcast to continue the mesh execution.
                 End your response exactly with a new line containing ONLY:
@@ -225,7 +227,7 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for a while
-    delay(65000)
+    delay(120000)
 
     println("Agent Mesh Session Completed.")
 
