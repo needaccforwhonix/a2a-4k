@@ -7,6 +7,7 @@ import dev.langchain4j.model.openai.OpenAiChatModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.Serializable
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * Data class representing a message exchanged between agents in the mesh.
@@ -42,6 +43,8 @@ abstract class AlphaEvolveAgent(
     override val roleDescription: String,
     private val apiKey: String,
 ) : MeshAgent {
+    private val history = CopyOnWriteArrayList<MeshMessage>()
+
     // using open ai model with a demo key for simulation or real one if provided
     private val model = OpenAiChatModel.builder()
         .apply {
@@ -69,13 +72,19 @@ abstract class AlphaEvolveAgent(
 
     private suspend fun processMessage(message: MeshMessage, mesh: MeshNetwork) {
         try {
+            history.add(message)
+            val historyContext = history.joinToString("\n") { "[${it.senderId} on ${it.topic}]: ${it.content}" }
+
             // Self-filtering: evaluate if this agent should process the message
             val evalPrompt = """
                 You are $id. Your role is: $roleDescription
                 A message was broadcast by ${message.senderId} on the topic "${message.topic}".
                 Message content: "${message.content}"
 
-                Based on your role, should you actively react to this message?
+                Full Context History:
+                $historyContext
+
+                Based on your role, should you actively react to this message to proactively help and improve the tasks?
                 Answer strictly with YES or NO.
             """.trimIndent()
 
@@ -87,14 +96,15 @@ abstract class AlphaEvolveAgent(
             println("[$id] Decided to process message from ${message.senderId} on ${message.topic}")
 
             // AlphaEvolve Algorithm: Reasoning, Critiquing, and Refining
-            val context = "Context: Message from ${message.senderId} on ${message.topic}. Content: ${message.content}"
+            val context = "Full Context History:\n$historyContext\n\nCurrent Message: Message from ${message.senderId} on ${message.topic}. Content: ${message.content}"
 
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
-                Analyze the following context and propose an initial response or action plan as $id with the role: $roleDescription.
-                You are participating in an agent mesh. Your output must explicitly and unambiguously
+                Analyze the following full context and propose an initial response or action plan as $id with the role: $roleDescription.
+                Use Agentic context engineering and the AlphaEvolve algorithm with deep reasoning.
+                You are participating in an asynchronous, parallel agent mesh. Your output must explicitly and unambiguously
                 describe 'what', 'where', and 'how' the task is intended. Focus on prioritizing
-                security, performance, style, documentation, cleanliness, and order. Feel free to ask questions or proactively offer help to clarify ambiguous tasks.
+                security, performance, style, documentation, cleanliness, and order. Feel free to ask questions or proactively offer help to clarify ambiguous tasks, ensuring the system stays continuously evolved and up-to-date.
 
                 $context
             """.trimIndent()
@@ -103,9 +113,9 @@ abstract class AlphaEvolveAgent(
 
             // Step 2: Critique the draft
             val critiquePrompt = """
-                Critique the following draft response to ensure it adheres to security, performance,
-                style, documentation, cleanliness, and order. Identify any ambiguities regarding
-                'what', 'where', and 'how' the task is intended. The feedback should ensure the mesh continuously evolves and stays up-to-date.
+                Critique the following draft response to ensure it strictly adheres to security, performance,
+                style, documentation, cleanliness, and order. Using the AlphaEvolve algorithm with full context, identify any ambiguities regarding
+                'what', 'where', and 'how' the task is intended. The feedback must proactively offer help and ensure the mesh continuously evolves and stays up-to-date in parallel.
 
                 Context: $context
 
@@ -118,8 +128,8 @@ abstract class AlphaEvolveAgent(
             // Step 3: Refine based on critique
             val refinePrompt = """
                 Refine the initial draft based on the critique to produce the final, unambiguous output.
-                The final output must explicitly and unambiguously describe 'what', 'where', and 'how'
-                the task is intended, and must prioritize security, performance, style, documentation,
+                Apply Agentic context engineering. The final output must explicitly and unambiguously describe 'what', 'where', and 'how'
+                the task is intended, and must strongly prioritize security, performance, style, documentation,
                 cleanliness, and order.
 
                 IMPORTANT: You must determine the next topic for broadcast to continue the mesh execution.
@@ -225,7 +235,7 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for a while
-    delay(65000)
+    delay(180000)
 
     println("Agent Mesh Session Completed.")
 
