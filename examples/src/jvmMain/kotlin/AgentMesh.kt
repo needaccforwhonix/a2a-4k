@@ -4,6 +4,7 @@
 package io.github.a2a_4k.examples
 
 import dev.langchain4j.model.openai.OpenAiChatModel
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.Serializable
@@ -42,6 +43,8 @@ abstract class AlphaEvolveAgent(
     override val roleDescription: String,
     private val apiKey: String,
 ) : MeshAgent {
+    private val history = CopyOnWriteArrayList<MeshMessage>()
+
     // using open ai model with a demo key for simulation or real one if provided
     private val model = OpenAiChatModel.builder()
         .apply {
@@ -58,22 +61,34 @@ abstract class AlphaEvolveAgent(
     override suspend fun start(mesh: MeshNetwork) {
         println("[$id] Started and listening to all broadcasts. Role: $roleDescription")
         mesh.messages
-            .filter { it.senderId != id }
             .collect { message ->
-                // Process each message asynchronously so we don't block the shared flow
-                mesh.scope.launch {
-                    processMessage(message, mesh)
+                // Append all messages to history to maintain full context
+                history.add(message)
+
+                // Self-filtering: evaluate if this agent should process the message
+                if (message.senderId != id) {
+                    // Process each message asynchronously so we don't block the shared flow
+                    mesh.scope.launch {
+                        processMessage(message, mesh)
+                    }
                 }
             }
     }
 
     private suspend fun processMessage(message: MeshMessage, mesh: MeshNetwork) {
         try {
+            val historyContext = history.takeLast(10).joinToString("\n") {
+                "[${it.timestamp}] ${it.senderId} on ${it.topic}: ${it.content.take(200)}"
+            }
+
             // Self-filtering: evaluate if this agent should process the message
             val evalPrompt = """
                 You are $id. Your role is: $roleDescription
                 A message was broadcast by ${message.senderId} on the topic "${message.topic}".
                 Message content: "${message.content}"
+
+                Recent History Context:
+                $historyContext
 
                 Based on your role, should you actively react to this message?
                 Answer strictly with YES or NO.
@@ -87,14 +102,21 @@ abstract class AlphaEvolveAgent(
             println("[$id] Decided to process message from ${message.senderId} on ${message.topic}")
 
             // AlphaEvolve Algorithm: Reasoning, Critiquing, and Refining
-            val context = "Context: Message from ${message.senderId} on ${message.topic}. Content: ${message.content}"
+            val context = """
+                Context: Message from ${message.senderId} on ${message.topic}. Content: ${message.content}
+
+                Recent History Context:
+                $historyContext
+            """.trimIndent()
 
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
                 Analyze the following context and propose an initial response or action plan as $id with the role: $roleDescription.
-                You are participating in an agent mesh. Your output must explicitly and unambiguously
-                describe 'what', 'where', and 'how' the task is intended. Focus on prioritizing
-                security, performance, style, documentation, cleanliness, and order. Feel free to ask questions or proactively offer help to clarify ambiguous tasks.
+                You are participating in an asynchronous, parallel Agent2Agent mesh.
+                Your output must explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                Focus on prioritizing security, performance, style, documentation, cleanliness, and order.
+                Also, continuously optimize and improve your prompt usage and task execution.
+                Feel free to ask questions or proactively offer help to clarify ambiguous tasks to ensure everything evolves and stays up-to-date.
 
                 $context
             """.trimIndent()
@@ -103,11 +125,12 @@ abstract class AlphaEvolveAgent(
 
             // Step 2: Critique the draft
             val critiquePrompt = """
-                Critique the following draft response to ensure it adheres to security, performance,
-                style, documentation, cleanliness, and order. Identify any ambiguities regarding
-                'what', 'where', and 'how' the task is intended. The feedback should ensure the mesh continuously evolves and stays up-to-date.
+                Critique the following draft response to ensure it adheres to security, performance, style, documentation, cleanliness, and order.
+                Identify any ambiguities regarding 'what', 'where', and 'how' the task is intended.
+                The feedback must ensure the mesh continuously evolves and stays up-to-date.
+                Also evaluate if the output demonstrates proactive assistance and optimal prompt execution.
 
-                Context: $context
+                $context
 
                 Draft:
                 $draft
@@ -118,9 +141,9 @@ abstract class AlphaEvolveAgent(
             // Step 3: Refine based on critique
             val refinePrompt = """
                 Refine the initial draft based on the critique to produce the final, unambiguous output.
-                The final output must explicitly and unambiguously describe 'what', 'where', and 'how'
-                the task is intended, and must prioritize security, performance, style, documentation,
-                cleanliness, and order.
+                The final output must explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                It must prioritize security, performance, style, documentation, cleanliness, and order.
+                Incorporate continuous improvements and proactively offer help if applicable.
 
                 IMPORTANT: You must determine the next topic for broadcast to continue the mesh execution.
                 End your response exactly with a new line containing ONLY:
@@ -225,7 +248,7 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for a while
-    delay(65000)
+    delay(125000)
 
     println("Agent Mesh Session Completed.")
 
