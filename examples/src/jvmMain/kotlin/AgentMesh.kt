@@ -42,6 +42,9 @@ abstract class AlphaEvolveAgent(
     override val roleDescription: String,
     private val apiKey: String,
 ) : MeshAgent {
+
+    private val history = java.util.concurrent.CopyOnWriteArrayList<MeshMessage>()
+
     // using open ai model with a demo key for simulation or real one if provided
     private val model = OpenAiChatModel.builder()
         .apply {
@@ -58,24 +61,38 @@ abstract class AlphaEvolveAgent(
     override suspend fun start(mesh: MeshNetwork) {
         println("[$id] Started and listening to all broadcasts. Role: $roleDescription")
         mesh.messages
-            .filter { it.senderId != id }
             .collect { message ->
+                // Append all messages to history for full context
+                history.add(message)
+
                 // Process each message asynchronously so we don't block the shared flow
-                mesh.scope.launch {
-                    processMessage(message, mesh)
+                // Filter out the agent's own messages to avoid broadcast loops
+                if (message.senderId != id) {
+                    mesh.scope.launch {
+                        processMessage(message, mesh)
+                    }
                 }
             }
     }
 
     private suspend fun processMessage(message: MeshMessage, mesh: MeshNetwork) {
         try {
+            // Get recent history window
+            val recentHistory = history.takeLast(20).joinToString("\n") {
+                "[${it.timestamp}] ${it.senderId} on '${it.topic}': ${it.content}"
+            }
+
             // Self-filtering: evaluate if this agent should process the message
             val evalPrompt = """
                 You are $id. Your role is: $roleDescription
-                A message was broadcast by ${message.senderId} on the topic "${message.topic}".
+
+                Recent History:
+                $recentHistory
+
+                A new message was broadcast by ${message.senderId} on the topic "${message.topic}".
                 Message content: "${message.content}"
 
-                Based on your role, should you actively react to this message?
+                Based on your role and the recent history, should you actively react to this message?
                 Answer strictly with YES or NO.
             """.trimIndent()
 
@@ -87,15 +104,17 @@ abstract class AlphaEvolveAgent(
             println("[$id] Decided to process message from ${message.senderId} on ${message.topic}")
 
             // AlphaEvolve Algorithm: Reasoning, Critiquing, and Refining
-            val context = "Context: Message from ${message.senderId} on ${message.topic}. Content: ${message.content}"
+            val context = "Recent History:\n$recentHistory\n\nCurrent Message from ${message.senderId} on ${message.topic}. Content: ${message.content}"
 
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
                 Analyze the following context and propose an initial response or action plan as $id with the role: $roleDescription.
                 You are participating in an agent mesh. Your output must explicitly and unambiguously
                 describe 'what', 'where', and 'how' the task is intended. Focus on prioritizing
-                security, performance, style, documentation, cleanliness, and order. Feel free to ask questions or proactively offer help to clarify ambiguous tasks.
+                security, performance, style, documentation, cleanliness, and order.
+                Support asynchronous parallel development by breaking down tasks if needed. Feel free to ask questions or proactively offer help to clarify ambiguous tasks to keep the system continuously evolving and up-to-date.
 
+                Context:
                 $context
             """.trimIndent()
             val draft = callModel(draftPrompt)
@@ -105,9 +124,11 @@ abstract class AlphaEvolveAgent(
             val critiquePrompt = """
                 Critique the following draft response to ensure it adheres to security, performance,
                 style, documentation, cleanliness, and order. Identify any ambiguities regarding
-                'what', 'where', and 'how' the task is intended. The feedback should ensure the mesh continuously evolves and stays up-to-date.
+                'what', 'where', and 'how' the task is intended.
+                Ensure the feedback encourages proactive help, asynchronous parallel development, and keeps the mesh continuously evolving and up-to-date.
 
-                Context: $context
+                Context:
+                $context
 
                 Draft:
                 $draft
@@ -119,8 +140,9 @@ abstract class AlphaEvolveAgent(
             val refinePrompt = """
                 Refine the initial draft based on the critique to produce the final, unambiguous output.
                 The final output must explicitly and unambiguously describe 'what', 'where', and 'how'
-                the task is intended, and must prioritize security, performance, style, documentation,
+                the task is intended. You must prioritize security, performance, style, documentation,
                 cleanliness, and order.
+                Remember to actively support asynchronous parallel development and offer help if things are ambiguous.
 
                 IMPORTANT: You must determine the next topic for broadcast to continue the mesh execution.
                 End your response exactly with a new line containing ONLY:
@@ -225,7 +247,7 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for a while
-    delay(65000)
+    delay(130000)
 
     println("Agent Mesh Session Completed.")
 
