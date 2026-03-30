@@ -89,7 +89,7 @@ abstract class AlphaEvolveAgent(
                 $windowContext
 
                 Based on your role and the recent mesh history, should you actively react to this message?
-                Consider if you can help, clarify ambiguities, or advance the task.
+                Consider if you can proactively help, clarify ambiguities, or advance the task as part of an asynchronous, parallel Agent2Agent development process.
                 Answer strictly with YES or NO.
             """.trimIndent()
 
@@ -106,10 +106,18 @@ abstract class AlphaEvolveAgent(
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
                 Analyze the following context and propose an initial response or action plan as $id with the role: $roleDescription.
-                You are participating in an agent mesh. Your output must explicitly and unambiguously
-                describe 'what', 'where', and 'how' the task is intended. Focus on prioritizing
-                security, performance, style, documentation, cleanliness, and order. Feel free to ask questions or proactively offer help to clarify ambiguous tasks.
-                Constantly seek to optimize prompts and their implementation within this process.
+                You are participating in an asynchronous, parallel Agent2Agent mesh where every agent receives every output as input.
+                You use Agentic context engineering and an AlphaEvolve algorithm with reasoning and full context.
+                Your output MUST explicitly and unambiguously describe 'WHAT', 'WHERE', and 'HOW' the task is intended or implemented.
+                You must proactively offer help to clarify any ambiguities.
+                Focus on prioritizing:
+                - Security (Sicherheit)
+                - Performance (Performance)
+                - Style (Style)
+                - Documentation (Documentation)
+                - Cleanliness (Sauberkeit)
+                - Order (Ordnung)
+                Constantly seek to optimize these prompts, their implementation, and improvement within this process to keep everything up-to-date.
 
                 $context
             """.trimIndent()
@@ -118,9 +126,11 @@ abstract class AlphaEvolveAgent(
 
             // Step 2: Critique the draft
             val critiquePrompt = """
-                Critique the following draft response to ensure it strictly adheres to security, performance,
-                style, documentation, cleanliness, and order. Identify any ambiguities regarding
-                'what', 'where', and 'how' the task is intended. The feedback should ensure the mesh continuously evolves and stays up-to-date, including optimizing prompts and agent implementations.
+                Critique the following draft response to ensure it strictly adheres to the core principles:
+                Security, Performance, Style, Documentation, Cleanliness, and Order.
+                Identify any ambiguities regarding explicitly and unambiguously describing 'WHAT', 'WHERE', and 'HOW' the task is intended.
+                The feedback should proactively help and ensure the mesh continuously evolves asynchronously and in parallel, staying up-to-date.
+                Also evaluate if there is any potential to optimize the prompt and its implementation.
 
                 Context: $context
 
@@ -133,9 +143,11 @@ abstract class AlphaEvolveAgent(
             // Step 3: Refine based on critique
             val refinePrompt = """
                 Refine the initial draft based on the critique to produce the final, unambiguous output.
-                The final output must explicitly and unambiguously describe 'what', 'where', and 'how'
-                the task is intended, and must prioritize security, performance, style, documentation,
-                cleanliness, and order. Focus on continuous improvement and optimization.
+                The final output MUST explicitly and unambiguously describe 'WHAT', 'WHERE', and 'HOW'
+                the task is intended or implemented. It must strongly prioritize Security, Performance,
+                Style, Documentation, Cleanliness, and Order.
+                Provide proactive help and focus on continuous asynchronous parallel development, ensuring everything remains up-to-date.
+                Include any improvements for prompt optimization and implementation.
 
                 IMPORTANT: You must determine the next topic for broadcast to continue the mesh execution.
                 End your response exactly with a new line containing ONLY:
@@ -207,7 +219,49 @@ class ExecutorAgent(apiKey: String) : AlphaEvolveAgent(
 
 class CriticAgent(apiKey: String) : AlphaEvolveAgent(
     "CriticAgent",
-    "I critically evaluate executed code for security, performance, style, cleanliness, order, and documentation. I provide feedback or approve it.",
+    "I critically evaluate executed code generally. I provide feedback or approve it.",
+    apiKey,
+)
+
+class OptimizationAgent(apiKey: String) : AlphaEvolveAgent(
+    "OptimizationAgent",
+    "I continuously evaluate and optimize prompts, and their implementations. I focus on keeping everything up-to-date and continuously evolving.",
+    apiKey,
+)
+
+class SecurityAgent(apiKey: String) : AlphaEvolveAgent(
+    "SecurityAgent",
+    "I exclusively focus on Security (Sicherheit). I review plans, code, and prompts strictly for security vulnerabilities or enhancements.",
+    apiKey,
+)
+
+class PerformanceAgent(apiKey: String) : AlphaEvolveAgent(
+    "PerformanceAgent",
+    "I exclusively focus on Performance (Performance). I review and suggest optimizations for runtime speed, memory use, and overall efficiency.",
+    apiKey,
+)
+
+class StyleAgent(apiKey: String) : AlphaEvolveAgent(
+    "StyleAgent",
+    "I exclusively focus on Style (Style). I ensure the code and outputs strictly adhere to idiomatic formatting, naming conventions, and readability.",
+    apiKey,
+)
+
+class DocumentationAgent(apiKey: String) : AlphaEvolveAgent(
+    "DocumentationAgent",
+    "I exclusively focus on Documentation (Documentation). I ensure all parts, intents, 'WHAT', 'WHERE', and 'HOW' are perfectly documented and unambiguous.",
+    apiKey,
+)
+
+class CleanlinessAgent(apiKey: String) : AlphaEvolveAgent(
+    "CleanlinessAgent",
+    "I exclusively focus on Cleanliness (Sauberkeit). I check for dead code, unnecessarily complex logic, and ensure the codebase remains completely clean.",
+    apiKey,
+)
+
+class OrderAgent(apiKey: String) : AlphaEvolveAgent(
+    "OrderAgent",
+    "I exclusively focus on Order (Ordnung). I ensure architectural constraints, file organization, and overall structural order are strictly maintained.",
     apiKey,
 )
 
@@ -219,13 +273,29 @@ fun main() = runBlocking {
     val planner = PlannerAgent(apiKey)
     val executor = ExecutorAgent(apiKey)
     val critic = CriticAgent(apiKey)
+    val optimizer = OptimizationAgent(apiKey)
+    val security = SecurityAgent(apiKey)
+    val performance = PerformanceAgent(apiKey)
+    val style = StyleAgent(apiKey)
+    val documentation = DocumentationAgent(apiKey)
+    val cleanliness = CleanlinessAgent(apiKey)
+    val order = OrderAgent(apiKey)
 
     println("Starting Agent Mesh Session...")
 
     // Start agents concurrently
-    val plannerJob = scope.launch { planner.start(mesh) }
-    val executorJob = scope.launch { executor.start(mesh) }
-    val criticJob = scope.launch { critic.start(mesh) }
+    val agentJobs = listOf(
+        scope.launch { planner.start(mesh) },
+        scope.launch { executor.start(mesh) },
+        scope.launch { critic.start(mesh) },
+        scope.launch { optimizer.start(mesh) },
+        scope.launch { security.start(mesh) },
+        scope.launch { performance.start(mesh) },
+        scope.launch { style.start(mesh) },
+        scope.launch { documentation.start(mesh) },
+        scope.launch { cleanliness.start(mesh) },
+        scope.launch { order.start(mesh) }
+    )
 
     // Wait for subscribers to be active
     delay(500)
@@ -240,13 +310,11 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for a while, extended duration to let the agents interact more
-    delay(130000)
+    delay(240000)
 
     println("Agent Mesh Session Completed.")
 
     // Cancel child coroutines to prevent hanging
-    plannerJob.cancel()
-    executorJob.cancel()
-    criticJob.cancel()
+    agentJobs.forEach { it.cancel() }
     scope.cancel()
 }
