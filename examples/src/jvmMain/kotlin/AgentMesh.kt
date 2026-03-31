@@ -211,6 +211,48 @@ class CriticAgent(apiKey: String) : AlphaEvolveAgent(
     apiKey,
 )
 
+class OptimizationAgent(apiKey: String) : AlphaEvolveAgent(
+    "OptimizationAgent",
+    "I focus on optimizing prompts and their implementations to ensure the agent mesh runs efficiently and effectively.",
+    apiKey,
+)
+
+class SecurityAgent(apiKey: String) : AlphaEvolveAgent(
+    "SecurityAgent",
+    "I ensure that all proposed code and architectures are secure against vulnerabilities and follow best security practices.",
+    apiKey,
+)
+
+class PerformanceAgent(apiKey: String) : AlphaEvolveAgent(
+    "PerformanceAgent",
+    "I focus on the efficiency and speed of the code, identifying bottlenecks and suggesting performance improvements.",
+    apiKey,
+)
+
+class StyleAgent(apiKey: String) : AlphaEvolveAgent(
+    "StyleAgent",
+    "I ensure code adheres to standard conventions, style guidelines, and is readable and consistent.",
+    apiKey,
+)
+
+class DocumentationAgent(apiKey: String) : AlphaEvolveAgent(
+    "DocumentationAgent",
+    "I ensure comprehensive and clear documentation is provided for all code, architectures, and processes.",
+    apiKey,
+)
+
+class CleanlinessAgent(apiKey: String) : AlphaEvolveAgent(
+    "CleanlinessAgent",
+    "I keep the codebase clean by suggesting refactoring, removing technical debt, and ensuring high code quality.",
+    apiKey,
+)
+
+class OrderAgent(apiKey: String) : AlphaEvolveAgent(
+    "OrderAgent",
+    "I maintain the overall project structure, logical organization, and ensure that architectural boundaries are respected.",
+    apiKey,
+)
+
 fun main() = runBlocking {
     val apiKey = System.getenv("OPENAI_API_KEY") ?: "demo"
     val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -219,6 +261,13 @@ fun main() = runBlocking {
     val planner = PlannerAgent(apiKey)
     val executor = ExecutorAgent(apiKey)
     val critic = CriticAgent(apiKey)
+    val optimization = OptimizationAgent(apiKey)
+    val security = SecurityAgent(apiKey)
+    val performance = PerformanceAgent(apiKey)
+    val style = StyleAgent(apiKey)
+    val documentation = DocumentationAgent(apiKey)
+    val cleanliness = CleanlinessAgent(apiKey)
+    val order = OrderAgent(apiKey)
 
     println("Starting Agent Mesh Session...")
 
@@ -226,6 +275,13 @@ fun main() = runBlocking {
     val plannerJob = scope.launch { planner.start(mesh) }
     val executorJob = scope.launch { executor.start(mesh) }
     val criticJob = scope.launch { critic.start(mesh) }
+    val optimizationJob = scope.launch { optimization.start(mesh) }
+    val securityJob = scope.launch { security.start(mesh) }
+    val performanceJob = scope.launch { performance.start(mesh) }
+    val styleJob = scope.launch { style.start(mesh) }
+    val documentationJob = scope.launch { documentation.start(mesh) }
+    val cleanlinessJob = scope.launch { cleanliness.start(mesh) }
+    val orderJob = scope.launch { order.start(mesh) }
 
     // Wait for subscribers to be active
     delay(500)
@@ -240,7 +296,7 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for a while, extended duration to let the agents interact more
-    delay(130000)
+    delay(240000)
 
     println("Agent Mesh Session Completed.")
 
@@ -248,5 +304,12 @@ fun main() = runBlocking {
     plannerJob.cancel()
     executorJob.cancel()
     criticJob.cancel()
+    optimizationJob.cancel()
+    securityJob.cancel()
+    performanceJob.cancel()
+    styleJob.cancel()
+    documentationJob.cancel()
+    cleanlinessJob.cancel()
+    orderJob.cancel()
     scope.cancel()
 }
