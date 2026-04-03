@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.UUID
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * Represents a message in the Agent Mesh.
@@ -59,7 +60,9 @@ abstract class MeshAgent(
                 .filter { it.sender != name } // Don't process own messages
                 .filter { it.target == null || it.target == name } // Process broadcast or direct messages
                 .collect { message ->
-                    processMessage(message)
+                    launch {
+                        processMessage(message)
+                    }
                 }
         }
     }
@@ -83,7 +86,7 @@ abstract class AlphaEvolveAgent(
 ) : MeshAgent(name, network, scope) {
 
     // Simulated LLM context
-    protected val context = mutableListOf<String>()
+    protected val context = CopyOnWriteArrayList<String>()
 
     protected fun addToContext(role: String, text: String) {
         context.add("$role: $text")
