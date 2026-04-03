@@ -6,6 +6,7 @@ package io.github.a2a_4k
 
 import dev.langchain4j.model.openai.OpenAiChatModel
 import java.util.UUID
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
@@ -46,15 +47,22 @@ class MeshNetwork {
 /**
  * Base interface for an autonomous agent in the mesh.
  */
-abstract class MeshAgent(
-    val name: String,
+interface MeshAgent {
+    val name: String
+    suspend fun process(message: MeshMessage)
+    suspend fun start()
+}
+
+/**
+ * Abstract class implementing the AlphaEvolve algorithm.
+ */
+abstract class AlphaEvolveAgent(
+    override val name: String,
     protected val network: MeshNetwork,
-) {
-    private val memory = mutableListOf<MeshMessage>()
+) : MeshAgent {
+    protected val memory = CopyOnWriteArrayList<MeshMessage>()
 
-    abstract suspend fun process(message: MeshMessage)
-
-    open suspend fun start() = coroutineScope {
+    override suspend fun start() = coroutineScope {
         launch {
             network.messages.collect { message ->
                 memory.add(message)
@@ -96,30 +104,39 @@ abstract class MeshAgent(
             .modelName("gpt-4o-mini")
             .build()
 
+        val recentHistory = memory.takeLast(20).joinToString("\n") { "[${it.sender}]: ${it.content}" }
+
         val prompt = """
             You are $name, acting as $role.
             Use Agentic context engineering and alphaevolve algorithm (reasoning, critiquing, and refining outputs before finalizing).
             Analyze the input with full context.
+            Recent History:
+            $recentHistory
+
             Input: $input
             Your output must explicitly and unambiguously describe 'what', 'where', and 'how' it is intended.
             Ensure security, performance, style, documentation, cleanliness, and order.
+
+            If you determine that another agent should process this next, append 'NEXT_TOPIC: <topic_name>' to your response, where <topic_name> is a keyword like 'plan', 'execute', 'critique', 'optimize', 'secure', 'perform', 'style', 'document', 'clean', 'order'.
         """.trimIndent()
+
+        delay(3000) // Rate limiting for demo environment
 
         try {
             model.chat(prompt)
         } catch (e: Exception) {
-            "Simulated response for $name based on $input"
+            "Simulated response for $name based on $input\nNEXT_TOPIC: execute"
         }
     }
 }
 
-class PlannerAgent(network: MeshNetwork) : MeshAgent("PlannerAgent", network) {
+class PlannerAgent(network: MeshNetwork) : AlphaEvolveAgent("PlannerAgent", network) {
     override suspend fun process(message: MeshMessage) {
-        if (message.content.contains("task:", ignoreCase = true) && !message.content.contains("plan:", ignoreCase = true)) {
-            println("[$name] Received task from ${message.sender}. Formulating plan...")
+        if (message.content.contains("task:", ignoreCase = true) || message.content.contains("NEXT_TOPIC: plan", ignoreCase = true)) {
+            println("[$name] Processing message from ${message.sender}...")
             val response = alphaEvolveReasoning(message.content, "Planner")
             broadcast(
-                content = "plan: $response",
+                content = response,
                 what = "Formulate a plan",
                 where = "PlannerAgent",
                 how = "Agentic context engineering and AlphaEvolve reasoning",
@@ -129,13 +146,13 @@ class PlannerAgent(network: MeshNetwork) : MeshAgent("PlannerAgent", network) {
     }
 }
 
-class ExecutorAgent(network: MeshNetwork) : MeshAgent("ExecutorAgent", network) {
+class ExecutorAgent(network: MeshNetwork) : AlphaEvolveAgent("ExecutorAgent", network) {
     override suspend fun process(message: MeshMessage) {
-        if (message.content.contains("plan:", ignoreCase = true) && !message.content.contains("executed:", ignoreCase = true)) {
-            println("[$name] Received plan from ${message.sender}. Executing...")
+        if (message.content.contains("NEXT_TOPIC: execute", ignoreCase = true)) {
+            println("[$name] Processing message from ${message.sender}...")
             val response = alphaEvolveReasoning(message.content, "Executor")
             broadcast(
-                content = "executed: $response",
+                content = response,
                 what = "Execute the plan",
                 where = "ExecutorAgent",
                 how = "Agentic context engineering and AlphaEvolve reasoning",
@@ -145,13 +162,13 @@ class ExecutorAgent(network: MeshNetwork) : MeshAgent("ExecutorAgent", network) 
     }
 }
 
-class CriticAgent(network: MeshNetwork) : MeshAgent("CriticAgent", network) {
+class CriticAgent(network: MeshNetwork) : AlphaEvolveAgent("CriticAgent", network) {
     override suspend fun process(message: MeshMessage) {
-        if (message.content.contains("executed:", ignoreCase = true) && !message.content.contains("reviewed:", ignoreCase = true)) {
-            println("[$name] Received execution result from ${message.sender}. Critiquing...")
+        if (message.content.contains("NEXT_TOPIC: critique", ignoreCase = true)) {
+            println("[$name] Processing message from ${message.sender}...")
             val response = alphaEvolveReasoning(message.content, "Critic")
             broadcast(
-                content = "reviewed: $response",
+                content = response,
                 what = "Critique execution",
                 where = "CriticAgent",
                 how = "Agentic context engineering and AlphaEvolve reasoning",
@@ -161,16 +178,96 @@ class CriticAgent(network: MeshNetwork) : MeshAgent("CriticAgent", network) {
     }
 }
 
+class OptimizationAgent(network: MeshNetwork) : AlphaEvolveAgent("OptimizationAgent", network) {
+    override suspend fun process(message: MeshMessage) {
+        if (message.content.contains("NEXT_TOPIC: optimize", ignoreCase = true)) {
+            println("[$name] Processing message from ${message.sender}...")
+            val response = alphaEvolveReasoning(message.content, "Optimizer")
+            broadcast(content = response, what = "Optimize", where = "OptimizationAgent", how = "AlphaEvolve")
+        }
+    }
+}
+
+class SecurityAgent(network: MeshNetwork) : AlphaEvolveAgent("SecurityAgent", network) {
+    override suspend fun process(message: MeshMessage) {
+        if (message.content.contains("NEXT_TOPIC: secure", ignoreCase = true)) {
+            println("[$name] Processing message from ${message.sender}...")
+            val response = alphaEvolveReasoning(message.content, "Security Expert")
+            broadcast(content = response, what = "Security check", where = "SecurityAgent", how = "AlphaEvolve")
+        }
+    }
+}
+
+class PerformanceAgent(network: MeshNetwork) : AlphaEvolveAgent("PerformanceAgent", network) {
+    override suspend fun process(message: MeshMessage) {
+        if (message.content.contains("NEXT_TOPIC: perform", ignoreCase = true)) {
+            println("[$name] Processing message from ${message.sender}...")
+            val response = alphaEvolveReasoning(message.content, "Performance Expert")
+            broadcast(content = response, what = "Performance check", where = "PerformanceAgent", how = "AlphaEvolve")
+        }
+    }
+}
+
+class StyleAgent(network: MeshNetwork) : AlphaEvolveAgent("StyleAgent", network) {
+    override suspend fun process(message: MeshMessage) {
+        if (message.content.contains("NEXT_TOPIC: style", ignoreCase = true)) {
+            println("[$name] Processing message from ${message.sender}...")
+            val response = alphaEvolveReasoning(message.content, "Style Expert")
+            broadcast(content = response, what = "Style check", where = "StyleAgent", how = "AlphaEvolve")
+        }
+    }
+}
+
+class DocumentationAgent(network: MeshNetwork) : AlphaEvolveAgent("DocumentationAgent", network) {
+    override suspend fun process(message: MeshMessage) {
+        if (message.content.contains("NEXT_TOPIC: document", ignoreCase = true)) {
+            println("[$name] Processing message from ${message.sender}...")
+            val response = alphaEvolveReasoning(message.content, "Documentation Expert")
+            broadcast(content = response, what = "Documentation check", where = "DocumentationAgent", how = "AlphaEvolve")
+        }
+    }
+}
+
+class CleanlinessAgent(network: MeshNetwork) : AlphaEvolveAgent("CleanlinessAgent", network) {
+    override suspend fun process(message: MeshMessage) {
+        if (message.content.contains("NEXT_TOPIC: clean", ignoreCase = true)) {
+            println("[$name] Processing message from ${message.sender}...")
+            val response = alphaEvolveReasoning(message.content, "Cleanliness Expert")
+            broadcast(content = response, what = "Cleanliness check", where = "CleanlinessAgent", how = "AlphaEvolve")
+        }
+    }
+}
+
+class OrderAgent(network: MeshNetwork) : AlphaEvolveAgent("OrderAgent", network) {
+    override suspend fun process(message: MeshMessage) {
+        if (message.content.contains("NEXT_TOPIC: order", ignoreCase = true)) {
+            println("[$name] Processing message from ${message.sender}...")
+            val response = alphaEvolveReasoning(message.content, "Order Expert")
+            broadcast(content = response, what = "Order check", where = "OrderAgent", how = "AlphaEvolve")
+        }
+    }
+}
+
 fun main(): Unit = runBlocking {
     val network = MeshNetwork()
-    val planner = PlannerAgent(network)
-    val executor = ExecutorAgent(network)
-    val critic = CriticAgent(network)
+
+    val agents = listOf(
+        PlannerAgent(network),
+        ExecutorAgent(network),
+        CriticAgent(network),
+        OptimizationAgent(network),
+        SecurityAgent(network),
+        PerformanceAgent(network),
+        StyleAgent(network),
+        DocumentationAgent(network),
+        CleanlinessAgent(network),
+        OrderAgent(network),
+    )
 
     val job = launch {
-        launch { planner.start() }
-        launch { executor.start() }
-        launch { critic.start() }
+        agents.forEach { agent ->
+            launch { agent.start() }
+        }
     }
 
     // Wait for subscribers to be active
@@ -189,8 +286,8 @@ fun main(): Unit = runBlocking {
         ),
     )
 
-    // Let the mesh evolve
-    delay(10000)
+    // Let the mesh evolve for at least 240 seconds
+    delay(240_000)
     println("[System] Shutting down agent mesh...")
     job.cancelAndJoin()
 }
