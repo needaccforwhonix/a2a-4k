@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.coroutineScope
 
 /**
  * Represents a message transmitted over the Agent Mesh.
@@ -62,21 +63,40 @@ abstract class MeshAgent(val name: String, protected val network: MeshNetwork) {
  * Common configuration for LangChain4j OpenAiChatModel
  */
 private val chatModel by lazy {
-    OpenAiChatModel.builder()
-        .apiKey(System.getenv("OPENAI_API_KEY") ?: "dummy")
-        .modelName("gpt-4o")
-        .build()
+    val apiKey = System.getenv("OPENAI_API_KEY")
+    if (apiKey.isNullOrBlank() || apiKey == "dummy") {
+        OpenAiChatModel.builder()
+            .apiKey("demo")
+            .modelName("gpt-4o-mini")
+            .build()
+    } else {
+        OpenAiChatModel.builder()
+            .apiKey(apiKey)
+            .modelName("gpt-4o")
+            .build()
+    }
+}
+
+/**
+ * Helper to invoke the chat model with rate limiting for demo keys.
+ */
+private suspend fun invokeChatModel(prompt: String): String = withContext(Dispatchers.IO) {
+    val apiKey = System.getenv("OPENAI_API_KEY")
+    if (apiKey.isNullOrBlank() || apiKey == "dummy") {
+        delay(3000) // Rate limiting for public demo key
+    }
+    chatModel.chat(prompt)
 }
 
 /**
  * PlannerAgent decides the structure and plan for an objective.
  */
 class PlannerAgent(network: MeshNetwork) : MeshAgent("PlannerAgent", network) {
-    override suspend fun listen() {
+    override suspend fun listen() = coroutineScope {
         network.bus.collect { message ->
             if (message.sender == "User" || (message.sender == "CriticAgent" && message.what.contains("PLAN_REVISION"))) {
-                println("[$name] Received task: ${message.what}")
-                val plan = withContext(Dispatchers.IO) {
+                launch {
+                    println("[$name] Received task: ${message.what}")
                     val prompt = """
                         You are a PlannerAgent in an AlphaEvolve Agentic Mesh.
                         Your job is to break down tasks into clear executable steps.
@@ -86,14 +106,15 @@ class PlannerAgent(network: MeshNetwork) : MeshAgent("PlannerAgent", network) {
                         Respond EXACTLY with WHAT needs to be done, WHERE it should happen, and HOW it should be executed.
                         Format as a JSON or structured list but must be unambiguous. Prioritize Security, Performance, Style, Cleanliness.
                     """.trimIndent()
-                    chatModel.chat(prompt)
+                    val plan = invokeChatModel(prompt)
+
+                    broadcast(
+                        what = "Execute Plan: $plan",
+                        where = "Global Project Scope",
+                        how = "Execute steps in order asynchronously",
+                        context = "Original request: ${message.what}",
+                    )
                 }
-                broadcast(
-                    what = "Execute Plan: $plan",
-                    where = "Global Project Scope",
-                    how = "Execute steps in order asynchronously",
-                    context = "Original request: ${message.what}",
-                )
             }
         }
     }
@@ -149,11 +170,11 @@ fun main(): Unit = runBlocking {
  * ExecutorAgent performs the actual steps laid out by the planner.
  */
 class ExecutorAgent(network: MeshNetwork) : MeshAgent("ExecutorAgent", network) {
-    override suspend fun listen() {
+    override suspend fun listen() = coroutineScope {
         network.bus.collect { message ->
             if (message.sender == "PlannerAgent" && message.what.startsWith("Execute Plan:")) {
-                println("[$name] Executing plan: ${message.what.take(50)}...")
-                val executionResult = withContext(Dispatchers.IO) {
+                launch {
+                    println("[$name] Executing plan: ${message.what.take(50)}...")
                     val prompt = """
                         You are an ExecutorAgent in an AlphaEvolve Agentic Mesh.
                         Your task is to take a plan and simulate its execution, generating the resulting code or artifact.
@@ -163,14 +184,15 @@ class ExecutorAgent(network: MeshNetwork) : MeshAgent("ExecutorAgent", network) 
 
                         Provide the concrete outcome or code implementation. Ensure high security, optimal performance, and clean code style.
                     """.trimIndent()
-                    chatModel.chat(prompt)
+                    val executionResult = invokeChatModel(prompt)
+
+                    broadcast(
+                        what = "Review Execution Result",
+                        where = message.where,
+                        how = "Evaluate against requirements and AlphaEvolve standards",
+                        context = executionResult,
+                    )
                 }
-                broadcast(
-                    what = "Review Execution Result",
-                    where = message.where,
-                    how = "Evaluate against requirements and AlphaEvolve standards",
-                    context = executionResult,
-                )
             }
         }
     }
@@ -180,11 +202,11 @@ class ExecutorAgent(network: MeshNetwork) : MeshAgent("ExecutorAgent", network) 
  * CriticAgent reviews the executor's output and determines if refinement is needed or if it's finalized.
  */
 class CriticAgent(network: MeshNetwork) : MeshAgent("CriticAgent", network) {
-    override suspend fun listen() {
+    override suspend fun listen() = coroutineScope {
         network.bus.collect { message ->
             if (message.sender == "ExecutorAgent" && message.what == "Review Execution Result") {
-                println("[$name] Critiquing execution result...")
-                val critique = withContext(Dispatchers.IO) {
+                launch {
+                    println("[$name] Critiquing execution result...")
                     val prompt = """
                         You are a CriticAgent in an AlphaEvolve Agentic Mesh.
                         Review the following execution result.
@@ -196,25 +218,25 @@ class CriticAgent(network: MeshNetwork) : MeshAgent("CriticAgent", network) {
                         If yes, respond with "APPROVED".
                         If no, respond with a specific explanation starting with "PLAN_REVISION" followed by the needed changes.
                     """.trimIndent()
-                    chatModel.chat(prompt)
-                }
+                    val critique = invokeChatModel(prompt)
 
-                if (critique.contains("APPROVED")) {
-                    println("[$name] APPROVED. Finalizing output.")
-                    broadcast(
-                        what = "FINALIZED",
-                        where = message.where,
-                        how = "Integration ready",
-                        context = message.context,
-                    )
-                } else {
-                    println("[$name] REJECTED. Requesting revision.")
-                    broadcast(
-                        what = "PLAN_REVISION: $critique",
-                        where = message.where,
-                        how = "Refine according to critique",
-                        context = message.context,
-                    )
+                    if (critique.contains("APPROVED")) {
+                        println("[$name] APPROVED. Finalizing output.")
+                        broadcast(
+                            what = "FINALIZED",
+                            where = message.where,
+                            how = "Integration ready",
+                            context = message.context,
+                        )
+                    } else {
+                        println("[$name] REJECTED. Requesting revision.")
+                        broadcast(
+                            what = "PLAN_REVISION: $critique",
+                            where = message.where,
+                            how = "Refine according to critique",
+                            context = message.context,
+                        )
+                    }
                 }
             }
         }
