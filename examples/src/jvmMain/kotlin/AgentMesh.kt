@@ -73,7 +73,7 @@ abstract class AlphaEvolveAgent(
 
     private suspend fun processMessage(message: MeshMessage, mesh: MeshNetwork) {
         try {
-            val historyContext = history.joinToString("\n") { "[${it.senderId} -> ${it.topic}]: ${it.content}" }
+            val historyContext = history.takeLast(20).joinToString("\n") { "[${it.senderId} -> ${it.topic}]: ${it.content.take(200)}" }
 
             // Self-filtering: evaluate if this agent should process the message
             val evalPrompt = """
