@@ -7,7 +7,14 @@ import dev.langchain4j.model.openai.OpenAiChatModel
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.Serializable
+
+/**
+ * Global mutex to synchronize demo API calls across all agents
+ */
+val demoApiMutex = Mutex()
 
 /**
  * Data class representing a message exchanged between agents in the mesh.
@@ -185,9 +192,14 @@ abstract class AlphaEvolveAgent(
     private suspend fun callModel(prompt: String): String = withContext(Dispatchers.IO) {
         try {
             if (apiKey == "demo") {
-                delay(3000) // Prevent RateLimitException for demo key
+                // Serialize requests and wait 3s per call to respect demo rate limits
+                demoApiMutex.withLock {
+                    delay(3000)
+                    model.chat(prompt)
+                }
+            } else {
+                model.chat(prompt)
             }
-            model.chat(prompt)
         } catch (e: Exception) {
             "Simulated response due to model error: ${e.message}. Processing prompt: ${prompt.take(30)}..."
         }
@@ -273,18 +285,27 @@ fun main() = runBlocking {
     println("Starting Agent Mesh Session...")
 
     // Start agents concurrently
-    val jobs = listOf(
+    val jobs = mutableListOf(
         scope.launch { planner.start(mesh) },
         scope.launch { executor.start(mesh) },
         scope.launch { critic.start(mesh) },
-        scope.launch { optimization.start(mesh) },
-        scope.launch { security.start(mesh) },
-        scope.launch { performance.start(mesh) },
-        scope.launch { style.start(mesh) },
-        scope.launch { documentation.start(mesh) },
-        scope.launch { cleanliness.start(mesh) },
-        scope.launch { order.start(mesh) },
     )
+
+    if (apiKey != "demo") {
+        jobs.addAll(
+            listOf(
+                scope.launch { optimization.start(mesh) },
+                scope.launch { security.start(mesh) },
+                scope.launch { performance.start(mesh) },
+                scope.launch { style.start(mesh) },
+                scope.launch { documentation.start(mesh) },
+                scope.launch { cleanliness.start(mesh) },
+                scope.launch { order.start(mesh) },
+            ),
+        )
+    } else {
+        println("Using 'demo' API key: Starting only essential agents to keep execution times reasonable.")
+    }
 
     // Wait for subscribers to be active
     delay(500)
