@@ -275,16 +275,16 @@ fun main() = runBlocking {
     println("Starting Agent Mesh Session...")
 
     // Start agents concurrently
-    val plannerJob = scope.launch { planner.start(mesh) }
-    val executorJob = scope.launch { executor.start(mesh) }
-    val criticJob = scope.launch { critic.start(mesh) }
-    val optimizationJob = scope.launch { optimization.start(mesh) }
-    val securityJob = scope.launch { security.start(mesh) }
-    val performanceJob = scope.launch { performance.start(mesh) }
-    val styleJob = scope.launch { style.start(mesh) }
-    val documentationJob = scope.launch { documentation.start(mesh) }
-    val cleanlinessJob = scope.launch { cleanliness.start(mesh) }
-    val orderJob = scope.launch { order.start(mesh) }
+    scope.launch { planner.start(mesh) }
+    scope.launch { executor.start(mesh) }
+    scope.launch { critic.start(mesh) }
+    scope.launch { optimization.start(mesh) }
+    scope.launch { security.start(mesh) }
+    scope.launch { performance.start(mesh) }
+    scope.launch { style.start(mesh) }
+    scope.launch { documentation.start(mesh) }
+    scope.launch { cleanliness.start(mesh) }
+    scope.launch { order.start(mesh) }
 
     // Wait for subscribers to be active
     delay(500)
@@ -303,16 +303,6 @@ fun main() = runBlocking {
 
     println("Agent Mesh Session Completed.")
 
-    // Cancel child coroutines to prevent hanging
-    plannerJob.cancel()
-    executorJob.cancel()
-    criticJob.cancel()
-    optimizationJob.cancel()
-    securityJob.cancel()
-    performanceJob.cancel()
-    styleJob.cancel()
-    documentationJob.cancel()
-    cleanlinessJob.cancel()
-    orderJob.cancel()
+    // Cancel scope to prevent hanging
     scope.cancel()
 }
