@@ -68,7 +68,7 @@ fun createRichContext(role: String, task: String, history: List<Message>): Strin
 class AlphaEvolveAgent(
     val name: String,
     val port: Int,
-    val peerUrls: List<String>
+    val peerUrls: List<String>,
 ) : TaskHandler {
     private val log = LoggerFactory.getLogger(name)
 
@@ -82,9 +82,9 @@ class AlphaEvolveAgent(
         log.info("[$name] Received task: $input")
 
         if (processedCount.get() > 5) {
-             log.info("[$name] Max processing limit reached. Stopping.")
-             emit(StatusUpdate(TaskStatus(TaskState.COMPLETED, message = assistantMessage("Limit reached."))))
-             return@flow
+            log.info("[$name] Max processing limit reached. Stopping.")
+            emit(StatusUpdate(TaskStatus(TaskState.COMPLETED, message = assistantMessage("Limit reached."))))
+            return@flow
         }
         processedCount.incrementAndGet()
 
@@ -99,7 +99,7 @@ class AlphaEvolveAgent(
         // 3. Emit Result
         val artifact = Artifact(
             name = "response-$name-${System.currentTimeMillis()}",
-            parts = listOf(TextPart(text = result))
+            parts = listOf(TextPart(text = result)),
         )
         emit(ArtifactUpdate(listOf(artifact)))
         emit(StatusUpdate(TaskStatus(TaskState.COMPLETED, message = assistantMessage(result))))
@@ -127,7 +127,7 @@ class AlphaEvolveAgent(
                 peerClient.sendTask(
                     message = message.toUserMessage(),
                     taskId = "broadcast-${System.currentTimeMillis()}-${Random.nextInt()}",
-                    sessionId = "mesh-session"
+                    sessionId = "mesh-session",
                 )
                 peerClient.close()
             } catch (e: Exception) {
@@ -171,13 +171,13 @@ fun main() = runBlocking {
             capabilities = capabilities,
             defaultInputModes = listOf("text"),
             defaultOutputModes = listOf("text"),
-            skills = listOf()
+            skills = listOf(),
         )
 
         A2AServer(
             port = agent.port,
             agentCard = agentCard,
-            taskManager = taskManager
+            taskManager = taskManager,
         ).also { it.start(wait = false) }
     }
 
@@ -191,7 +191,7 @@ fun main() = runBlocking {
         triggerClient.sendTask(
             message = "Create a Hello World application in Kotlin.".toUserMessage(),
             taskId = "init-task",
-            sessionId = "mesh-session"
+            sessionId = "mesh-session",
         )
     } catch (e: Exception) {
         println("Failed to trigger mesh: ${e.message}")
