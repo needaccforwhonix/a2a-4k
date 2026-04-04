@@ -288,12 +288,12 @@ fun main() = runBlocking {
         MeshMessage(
             senderId = "User",
             topic = "user_request",
-            content = "Create a new Kotlin class for handling HTTP requests securely and efficiently. Provide clean, well-documented code. Please optimize your prompts and implementation during this process.",
+            content = "Use a agent2agent structure where everything gets ist own a2a agent. All agents receive every Output as Input and can decide how to react. Every a2a agent uses Agentic context engineering and alphaevolve Algorithmus with reasoning and full context. Input und Output müssen eindeutig beschreiben was wo wie gewollt ist. Dabei kann gerne steht's geholfen werden. So soll asynchron parallel alles weiter entwickelt werden und aktuell bleiben. Sicherheit Performance Style documentation Sauberkeit Ordnung. Optimierung dieser prompt und deren Umsetzung und Verbesserung. Starte mindestens einen vollständigen Agent2agent Agent mesh pro Jules Sessions,gerne länger.",
         ),
     )
 
     // Let the mesh run for an extended duration to let the agents interact more (>= 240 seconds)
-    delay(245000)
+    delay(600000)
 
     println("Agent Mesh Session Completed.")
 
