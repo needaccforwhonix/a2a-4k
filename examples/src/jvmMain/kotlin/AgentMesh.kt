@@ -89,7 +89,8 @@ abstract class AlphaEvolveAgent(
                 $windowContext
 
                 Based on your role and the recent mesh history, should you actively react to this message?
-                Consider if you can help, clarify ambiguities, or advance the task.
+                Consider if you can help, clarify ambiguities, or advance the task asynchronously and in parallel.
+                Consider if you can contribute to optimizing the prompts and their implementation.
                 Answer strictly with YES or NO.
             """.trimIndent()
 
@@ -111,6 +112,7 @@ abstract class AlphaEvolveAgent(
                 Focus heavily on prioritizing security, performance, style, documentation, cleanliness, and order.
                 Actively and proactively offer help to clarify any ambiguous tasks or assist other agents.
                 Constantly seek to optimize these prompts and their implementation within this process to evolve and stay up-to-date.
+                Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving.
 
                 $context
             """.trimIndent()
@@ -139,6 +141,7 @@ abstract class AlphaEvolveAgent(
                 It MUST prioritize security, performance, style, documentation, cleanliness, and order.
                 Focus heavily on continuous improvement, optimizing prompts, and advancing the implementation.
                 Be proactive in offering help and clarification.
+                Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving and up-to-date.
 
                 IMPORTANT: You must determine the next topic for broadcast to continue the mesh execution.
                 End your response exactly with a new line containing ONLY:
@@ -293,7 +296,7 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for an extended duration to let the agents interact more (>= 240 seconds)
-    delay(600000)
+    delay(900000)
 
     println("Agent Mesh Session Completed.")
 
