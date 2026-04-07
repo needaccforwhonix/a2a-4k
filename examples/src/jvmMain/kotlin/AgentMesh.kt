@@ -90,6 +90,7 @@ abstract class AlphaEvolveAgent(
 
                 Based on your role and the recent mesh history, should you actively react to this message?
                 Consider if you can help, clarify ambiguities, or advance the task.
+                Only react if explicitly addressed or required to prevent broadcast loops.
                 Answer strictly with YES or NO.
             """.trimIndent()
 
@@ -293,7 +294,7 @@ fun main() = runBlocking {
     )
 
     // Let the mesh run for an extended duration to let the agents interact more (>= 240 seconds)
-    delay(600000)
+    delay(900000)
 
     println("Agent Mesh Session Completed.")
 
