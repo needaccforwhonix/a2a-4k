@@ -251,6 +251,12 @@ class OrderAgent(apiKey: String) : AlphaEvolveAgent(
     apiKey,
 )
 
+class OptimizationAgent(apiKey: String) : AlphaEvolveAgent(
+    "OptimizationAgent",
+    "I constantly analyze prompts, implementations, and processes to optimize them, ensuring continuous evolution, improvement, and that the system stays up-to-date.",
+    apiKey,
+)
+
 fun main() = runBlocking {
     val apiKey = System.getenv("OPENAI_API_KEY") ?: "demo"
     val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -265,6 +271,7 @@ fun main() = runBlocking {
     val documentation = DocumentationAgent(apiKey)
     val cleanliness = CleanlinessAgent(apiKey)
     val order = OrderAgent(apiKey)
+    val optimization = OptimizationAgent(apiKey)
 
     println("Starting Agent Mesh Session...")
 
@@ -279,6 +286,7 @@ fun main() = runBlocking {
         scope.launch { documentation.start(mesh) },
         scope.launch { cleanliness.start(mesh) },
         scope.launch { order.start(mesh) },
+        scope.launch { optimization.start(mesh) },
     )
 
     // Wait for subscribers to be active
