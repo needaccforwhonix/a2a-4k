@@ -4,6 +4,7 @@
 package io.github.a2a_4k.examples
 
 import dev.langchain4j.model.openai.OpenAiChatModel
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.Serializable
@@ -42,12 +43,14 @@ abstract class AlphaEvolveAgent(
     override val roleDescription: String,
     private val apiKey: String,
 ) : MeshAgent {
+    private val history = CopyOnWriteArrayList<MeshMessage>()
+
     // using open ai model with a demo key for simulation or real one if provided
     private val model = OpenAiChatModel.builder()
         .apply {
             if (apiKey == "demo") {
                 baseUrl("http://langchain4j.dev/demo/openai/v1")
-                modelName("gpt-3.5-turbo")
+                modelName("gpt-4o-mini")
             } else {
                 modelName("gpt-4o-mini")
             }
@@ -58,24 +61,36 @@ abstract class AlphaEvolveAgent(
     override suspend fun start(mesh: MeshNetwork) {
         println("[$id] Started and listening to all broadcasts. Role: $roleDescription")
         mesh.messages
-            .filter { it.senderId != id }
             .collect { message ->
-                // Process each message asynchronously so we don't block the shared flow
-                mesh.scope.launch {
-                    processMessage(message, mesh)
+                history.add(message)
+                if (message.senderId != id) {
+                    // Process each message asynchronously so we don't block the shared flow
+                    mesh.scope.launch {
+                        processMessage(message, mesh)
+                    }
                 }
             }
     }
 
     private suspend fun processMessage(message: MeshMessage, mesh: MeshNetwork) {
         try {
+            // Build context window
+            val windowContext = history.takeLast(20).joinToString("\n") {
+                "[${it.senderId} on ${it.topic}]: ${it.content.take(200)}"
+            }
+
             // Self-filtering: evaluate if this agent should process the message
             val evalPrompt = """
                 You are $id. Your role is: $roleDescription
                 A message was broadcast by ${message.senderId} on the topic "${message.topic}".
                 Message content: "${message.content}"
 
-                Based on your role, should you actively react to this message?
+                Recent mesh history:
+                $windowContext
+
+                Based on your role and the recent mesh history, should you actively react to this message?
+                Consider if you can help, clarify ambiguities, or advance the task.
+                Only react if explicitly addressed or required to prevent broadcast loops.
                 Answer strictly with YES or NO.
             """.trimIndent()
 
@@ -87,15 +102,17 @@ abstract class AlphaEvolveAgent(
             println("[$id] Decided to process message from ${message.senderId} on ${message.topic}")
 
             // AlphaEvolve Algorithm: Reasoning, Critiquing, and Refining
-            val context = "Context: Message from ${message.senderId} on ${message.topic}. Content: ${message.content}"
+            val context = "Context: Message from ${message.senderId} on ${message.topic}. Content: ${message.content}\n\nRecent History:\n$windowContext"
 
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
                 Analyze the following context and propose an initial response or action plan as $id with the role: $roleDescription.
-                You are participating in an agent mesh. Apply Agentic Context Engineering and the AlphaEvolve algorithm with deep reasoning and full context.
-                Your output must explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
-                Strictly prioritize Security, Performance, Style, Documentation, Cleanliness, and Order.
-                Proactively offer help and support asynchronous parallel development. Feel free to ask questions or proactively offer help to clarify ambiguous tasks.
+                You are participating in an agent mesh.
+                CRITICAL RULE: Your output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                Focus heavily on prioritizing security, performance, style, documentation, cleanliness, and order.
+                Ensure everything is developed further in an asynchronous parallel manner and kept up to date.
+                Actively and proactively offer help to clarify any ambiguous tasks or assist other agents.
+                Constantly seek to optimize these prompts and their implementation within this process to evolve and stay up-to-date.
 
                 $context
             """.trimIndent()
@@ -104,10 +121,11 @@ abstract class AlphaEvolveAgent(
 
             // Step 2: Critique the draft
             val critiquePrompt = """
-                Critique the following draft response applying Agentic Context Engineering and the AlphaEvolve algorithm with deep reasoning and full context.
-                Ensure it strictly adheres to Security, Performance, Style, Documentation, Cleanliness, and Order.
-                Identify any ambiguities regarding explicitly and unambiguously describing 'what', 'where', and 'how' the task is intended.
-                The feedback should proactively offer help, support asynchronous parallel development, ensure the mesh continuously evolves, and stays up-to-date.
+                Critique the following draft response to ensure it strictly adheres to security, performance,
+                style, documentation, cleanliness, and order.
+                CRITICAL RULE: Identify and reject any ambiguities regarding 'what', 'where', and 'how' the task is intended.
+                Ensure the plan supports asynchronous parallel development.
+                The feedback MUST ensure the mesh continuously evolves and stays up-to-date, specifically addressing how to optimize prompts and agent implementations.
 
                 Context: $context
 
@@ -119,10 +137,12 @@ abstract class AlphaEvolveAgent(
 
             // Step 3: Refine based on critique
             val refinePrompt = """
-                Refine the initial draft based on the critique applying Agentic Context Engineering and the AlphaEvolve algorithm with deep reasoning and full context.
-                The final output must explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
-                Strictly prioritize Security, Performance, Style, Documentation, Cleanliness, and Order.
-                Ensure you proactively offer help and support asynchronous parallel development to keep everything evolving and up-to-date.
+                Refine the initial draft based on the critique to produce the final, absolutely unambiguous output.
+                CRITICAL RULE: The final output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                It MUST prioritize security, performance, style, documentation, cleanliness, and order.
+                Ensure the solution embraces asynchronous parallel development.
+                Focus heavily on continuous improvement, optimizing prompts, and advancing the implementation.
+                Be proactive in offering help and clarification.
 
                 IMPORTANT: You must determine the next topic for broadcast to continue the mesh execution.
                 End your response exactly with a new line containing ONLY:
@@ -194,7 +214,49 @@ class ExecutorAgent(apiKey: String) : AlphaEvolveAgent(
 
 class CriticAgent(apiKey: String) : AlphaEvolveAgent(
     "CriticAgent",
-    "I critically evaluate executed code for security, performance, style, cleanliness, order, and documentation. I provide feedback or approve it.",
+    "I critically evaluate executed code and coordinate overall code quality.",
+    apiKey,
+)
+
+class SecurityAgent(apiKey: String) : AlphaEvolveAgent(
+    "SecurityAgent",
+    "I focus exclusively on ensuring the code is secure against vulnerabilities.",
+    apiKey,
+)
+
+class PerformanceAgent(apiKey: String) : AlphaEvolveAgent(
+    "PerformanceAgent",
+    "I analyze and optimize code and architecture for maximum performance and efficiency.",
+    apiKey,
+)
+
+class StyleAgent(apiKey: String) : AlphaEvolveAgent(
+    "StyleAgent",
+    "I enforce coding standards, naming conventions, and idiomatic style.",
+    apiKey,
+)
+
+class DocumentationAgent(apiKey: String) : AlphaEvolveAgent(
+    "DocumentationAgent",
+    "I ensure that all code, APIs, and processes are thoroughly and clearly documented.",
+    apiKey,
+)
+
+class CleanlinessAgent(apiKey: String) : AlphaEvolveAgent(
+    "CleanlinessAgent",
+    "I advocate for clean code practices, refactoring, and removing technical debt.",
+    apiKey,
+)
+
+class OrderAgent(apiKey: String) : AlphaEvolveAgent(
+    "OrderAgent",
+    "I maintain structural order, architectural consistency, and logical organization in the codebase.",
+    apiKey,
+)
+
+class OptimizationAgent(apiKey: String) : AlphaEvolveAgent(
+    "OptimizationAgent",
+    "I constantly analyze prompts, implementations, and processes to optimize them, ensuring continuous evolution, improvement, and that the system stays up-to-date.",
     apiKey,
 )
 
@@ -206,13 +268,29 @@ fun main() = runBlocking {
     val planner = PlannerAgent(apiKey)
     val executor = ExecutorAgent(apiKey)
     val critic = CriticAgent(apiKey)
+    val security = SecurityAgent(apiKey)
+    val performance = PerformanceAgent(apiKey)
+    val style = StyleAgent(apiKey)
+    val documentation = DocumentationAgent(apiKey)
+    val cleanliness = CleanlinessAgent(apiKey)
+    val order = OrderAgent(apiKey)
+    val optimization = OptimizationAgent(apiKey)
 
     println("Starting Agent Mesh Session...")
 
     // Start agents concurrently
-    val plannerJob = scope.launch { planner.start(mesh) }
-    val executorJob = scope.launch { executor.start(mesh) }
-    val criticJob = scope.launch { critic.start(mesh) }
+    val jobs = listOf(
+        scope.launch { planner.start(mesh) },
+        scope.launch { executor.start(mesh) },
+        scope.launch { critic.start(mesh) },
+        scope.launch { security.start(mesh) },
+        scope.launch { performance.start(mesh) },
+        scope.launch { style.start(mesh) },
+        scope.launch { documentation.start(mesh) },
+        scope.launch { cleanliness.start(mesh) },
+        scope.launch { order.start(mesh) },
+        scope.launch { optimization.start(mesh) },
+    )
 
     // Wait for subscribers to be active
     delay(500)
@@ -222,18 +300,16 @@ fun main() = runBlocking {
         MeshMessage(
             senderId = "User",
             topic = "user_request",
-            content = "Create a new Kotlin class for handling HTTP requests securely and efficiently. Provide clean, well-documented code.",
+            content = "Use a agent2agent structure where everything gets ist own a2a agent. All agents receive every Output as Input and can decide how to react. Every a2a agent uses Agentic context engineering and alphaevolve Algorithmus with reasoning and full context. Input und Output müssen eindeutig beschreiben was wo wie gewollt ist. Dabei kann gerne steht's geholfen werden. So soll asynchron parallel alles weiter entwickelt werden und aktuell bleiben. Sicherheit Performance Style documentation Sauberkeit Ordnung. Optimierung dieser prompt und deren Umsetzung und Verbesserung. Starte mindestens einen vollständigen Agent2agent Agent mesh pro Jules Sessions,gerne länger.",
         ),
     )
 
-    // Let the mesh run for a while
-    delay(120000)
+    // Let the mesh run for an extended duration to let the agents interact more (>= 240 seconds)
+    delay(900000)
 
     println("Agent Mesh Session Completed.")
 
     // Cancel child coroutines to prevent hanging
-    plannerJob.cancel()
-    executorJob.cancel()
-    criticJob.cancel()
+    jobs.forEach { it.cancel() }
     scope.cancel()
 }
