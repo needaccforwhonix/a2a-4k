@@ -10,9 +10,9 @@ import kotlin.test.assertNotNull
 
 class TaskTest {
 
-    private val json = Json { 
+    private val json = Json {
         prettyPrint = false
-        ignoreUnknownKeys = true 
+        ignoreUnknownKeys = true
     }
 
     @Test
@@ -25,25 +25,25 @@ class TaskTest {
                 state = TaskState.WORKING,
                 message = Message(
                     role = "user",
-                    parts = listOf(TextPart("Test message"))
+                    parts = listOf(TextPart("Test message")),
                 ),
-                timestamp = "2025-01-01T12:00:00Z"
+                timestamp = "2025-01-01T12:00:00Z",
             ),
             history = listOf(
                 Message(
                     role = "assistant",
-                    parts = listOf(TextPart("Previous message"))
-                )
+                    parts = listOf(TextPart("Previous message")),
+                ),
             ),
             artifacts = listOf(
                 Artifact(
                     name = "test-artifact",
                     description = "Test artifact data",
                     parts = listOf(TextPart("Test artifact content")),
-                    metadata = mapOf("key" to "value")
-                )
+                    metadata = mapOf("key" to "value"),
+                ),
             ),
-            metadata = mapOf("test" to "value", "number" to "42")
+            metadata = mapOf("test" to "value", "number" to "42"),
         )
 
         // When
@@ -67,8 +67,8 @@ class TaskTest {
         val minimalTask = Task(
             id = "task-minimal",
             status = TaskStatus(
-                state = TaskState.SUBMITTED
-            )
+                state = TaskState.SUBMITTED,
+            ),
         )
 
         // When
@@ -94,12 +94,12 @@ class TaskTest {
                 state = TaskState.COMPLETED,
                 message = Message(
                     role = "assistant",
-                    parts = listOf(TextPart("Task completed successfully"))
+                    parts = listOf(TextPart("Task completed successfully")),
                 ),
-                timestamp = "2025-01-01T12:30:00Z"
+                timestamp = "2025-01-01T12:30:00Z",
             ),
             final = true,
-            metadata = mapOf("completion_time" to "30s", "quality" to "high")
+            metadata = mapOf("completion_time" to "30s", "quality" to "high"),
         )
 
         // When
@@ -123,9 +123,9 @@ class TaskTest {
                 name = "image-artifact",
                 description = "Generated image artifact",
                 parts = listOf(TextPart("base64-encoded-image-data")),
-                metadata = mapOf("format" to "png", "size" to "1024x768")
+                metadata = mapOf("format" to "png", "size" to "1024x768"),
             ),
-            metadata = mapOf("source" to "generator", "version" to "1.0")
+            metadata = mapOf("source" to "generator", "version" to "1.0"),
         )
 
         // When
@@ -149,14 +149,14 @@ class TaskTest {
             sessionId = "session-456",
             message = Message(
                 role = "user",
-                parts = listOf(TextPart("Please process this request"))
+                parts = listOf(TextPart("Please process this request")),
             ),
             historyLength = 10,
             pushNotification = PushNotificationConfig(
                 url = "https://example.com/webhook",
-                token = "Bearer token123"
+                token = "Bearer token123",
             ),
-            metadata = mapOf("priority" to "high", "source" to "api")
+            metadata = mapOf("priority" to "high", "source" to "api"),
         )
 
         // When
@@ -180,20 +180,20 @@ class TaskTest {
         val task = Task(
             id = "stable-id-format-test",
             sessionId = "stable-session-id",
-            status = TaskStatus(state = TaskState.WORKING)
+            status = TaskStatus(state = TaskState.WORKING),
         )
 
         // When
         val jsonString = json.encodeToString(Task.serializer(), task)
 
         // Then - Verify that identifiers are serialized as strings
-        assert(jsonString.contains("\"id\":\"stable-id-format-test\"")) { 
-            "Task ID should be serialized as string" 
+        assert(jsonString.contains("\"id\":\"stable-id-format-test\"")) {
+            "Task ID should be serialized as string"
         }
-        assert(jsonString.contains("\"sessionId\":\"stable-session-id\"")) { 
-            "Session ID should be serialized as string" 
+        assert(jsonString.contains("\"sessionId\":\"stable-session-id\"")) {
+            "Session ID should be serialized as string"
         }
-        
+
         // Verify canonical format consistency
         val deserializedTask = json.decodeFromString(Task.serializer(), jsonString)
         val reserializedJson = json.encodeToString(Task.serializer(), deserializedTask)
