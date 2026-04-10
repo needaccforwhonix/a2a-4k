@@ -156,11 +156,12 @@ fun main(): Unit = runBlocking {
     // Seed the initial task
     network.broadcast(initialTask)
 
-    // Let the mesh run for a bit before terminating (in a real app, this would run indefinitely or until task complete)
-    delay(30_000)
-    println("--- Terminating Agent Mesh Session ---")
+    // Let the mesh run for an extended duration to let the agents interact more (>= 240 seconds)
+    delay(900000)
 
-    // Explicitly cancel child coroutines so the application can exit
+    println("Agent Mesh Session Completed.")
+
+    // Cancel child coroutines to prevent hanging
     job1.cancel()
     job2.cancel()
     job3.cancel()

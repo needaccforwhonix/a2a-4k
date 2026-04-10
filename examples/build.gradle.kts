@@ -33,16 +33,15 @@ repositories {
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
+// Task to run the Agent Mesh Example (A2A version)
 tasks.register<JavaExec>("runAgentMesh") {
     group = "application"
-    description = "Run the Agent Mesh example"
-    mainClass.set("AgentMeshKt")
+    description = "Runs the Agent Mesh Example"
+    mainClass.set("io.github.a2a_4k.examples.AgentMeshKt")
 
-    val jvmMain = kotlin.targets.getByName("jvm").compilations.getByName("main")
-    classpath(jvmMain.output.allOutputs, jvmMain.runtimeDependencyFiles)
+    val jvmTarget = kotlin.targets.getByName("jvm")
+    val mainCompilation = jvmTarget.compilations.getByName("main")
 
-    // Set environment variables here if needed or require them from environment
-    if (System.getenv("OPENAI_API_KEY") != null) {
-        environment("OPENAI_API_KEY", System.getenv("OPENAI_API_KEY"))
-    }
+    classpath = mainCompilation.output.allOutputs + mainCompilation.runtimeDependencyFiles!!
+    environment("OPENAI_API_KEY", System.getenv("OPENAI_API_KEY") ?: "demo")
 }
