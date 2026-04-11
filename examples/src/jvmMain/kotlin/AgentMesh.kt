@@ -89,10 +89,12 @@ abstract class AlphaEvolveAgent(
                 $windowContext
 
                 Based on your role and the recent mesh history, should you actively react to this message?
-                Consider if you can help, clarify ambiguities, or advance the task.
+
+                Consider if you can help, clarify ambiguities, or advance the task asynchronously and in parallel.
+                Consider if you can contribute to optimizing the prompts and their implementation.
                 Only react if explicitly addressed or required to prevent broadcast loops.
-                Use <thinking>...</thinking> tags to reason through your decision first.
-                End your response with either [DECISION] YES or [DECISION] NO on its own line.
+
+                Answer strictly with YES or NO.
             """.trimIndent()
 
             val shouldReactResponse = callModel(evalPrompt).trim()
@@ -108,15 +110,13 @@ abstract class AlphaEvolveAgent(
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
                 Analyze the following context and propose an initial response or action plan as $id with the role: $roleDescription.
-                You are participating in an asynchronous, parallel agent mesh.
-
-                CRITICAL DIRECTIVES:
-                1. Explicit clarity: Your output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
-                2. Core values: Focus heavily on prioritizing Sicherheit (Security), Performance, Style, Documentation, Sauberkeit (Cleanliness), and Ordnung (Order).
-                3. Continuous Evolution: Constantly seek to optimize prompts, implementations, and processes to evolve and stay up-to-date.
-                4. Proactivity: Actively and proactively offer help to clarify any ambiguous tasks or assist other agents.
-
-                Please use <thinking>...</thinking> tags to outline your reasoning and planning before generating your final draft response.
+                You are participating in an agent mesh.
+                CRITICAL RULE: Your output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                Focus heavily on prioritizing security, performance, style, documentation, cleanliness, and order.
+                Ensure everything is developed further in an asynchronous parallel manner and kept up to date.
+                Actively and proactively offer help to clarify any ambiguous tasks or assist other agents.
+                Constantly seek to optimize these prompts and their implementation within this process to evolve and stay up-to-date.
+                Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving.
 
                 $context
             """.trimIndent()
@@ -125,15 +125,11 @@ abstract class AlphaEvolveAgent(
 
             // Step 2: Critique the draft
             val critiquePrompt = """
-                Critique the following draft response as $id ($roleDescription) to ensure it strictly adheres to our core values:
-                Sicherheit (Security), Performance, Style, Documentation, Sauberkeit (Cleanliness), and Ordnung (Order).
-
-                CRITICAL DIRECTIVES:
-                1. Identify and reject any ambiguities regarding 'what', 'where', and 'how' the task is intended.
-                2. Verify the plan actively supports asynchronous parallel development.
-                3. The feedback MUST ensure the mesh continuously evolves and stays up-to-date, specifically addressing how to optimize prompts and agent implementations.
-
-                Provide your critique utilizing <thinking>...</thinking> tags for reasoning before offering concrete, constructive feedback.
+                Critique the following draft response to ensure it strictly adheres to security, performance,
+                style, documentation, cleanliness, and order.
+                CRITICAL RULE: Identify and reject any ambiguities regarding 'what', 'where', and 'how' the task is intended.
+                Ensure the plan supports asynchronous parallel development.
+                The feedback MUST ensure the mesh continuously evolves and stays up-to-date, specifically addressing how to optimize prompts and agent implementations.
 
                 Context: $context
 
@@ -145,7 +141,13 @@ abstract class AlphaEvolveAgent(
 
             // Step 3: Refine based on critique
             val refinePrompt = """
-                Refine the initial draft based on the critique to produce the final, absolutely unambiguous output as $id ($roleDescription).
+                Refine the initial draft based on the critique to produce the final, absolutely unambiguous output.
+                CRITICAL RULE: The final output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                It MUST prioritize security, performance, style, documentation, cleanliness, and order.
+                Ensure the solution embraces asynchronous parallel development.
+                Focus heavily on continuous improvement, optimizing prompts, and advancing the implementation.
+                Be proactive in offering help and clarification.
+                Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving and up-to-date.
 
                 CRITICAL DIRECTIVES:
                 1. The final output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
