@@ -98,7 +98,7 @@ abstract class AlphaEvolveAgent(
             """.trimIndent()
 
             val shouldReactResponse = callModel(evalPrompt).trim()
-            if (!shouldReactResponse.equals("YES", ignoreCase = true)) {
+            if (!shouldReactResponse.contains("[DECISION] YES", ignoreCase = true)) {
                 return // Ignored
             }
 
@@ -149,8 +149,16 @@ abstract class AlphaEvolveAgent(
                 Be proactive in offering help and clarification.
                 Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving and up-to-date.
 
-                IMPORTANT: You must determine the next topic for broadcast to continue the mesh execution.
-                End your response exactly with a new line containing ONLY:
+                CRITICAL DIRECTIVES:
+                1. The final output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                2. It MUST synthesize and elevate the core values: Sicherheit (Security), Performance, Style, Documentation, Sauberkeit (Cleanliness), and Ordnung (Order).
+                3. Ensure the solution fully embraces asynchronous parallel development and continuous evolutionary improvement.
+
+                Use <thinking>...</thinking> tags to process the critique and plan the final synthesis.
+                After your thinking process, provide the final response.
+
+                IMPORTANT ROUTING RULE: You must dynamically determine the next topic for broadcast to continue the mesh execution asynchronously.
+                End your entire response exactly with a new line containing ONLY:
                 NEXT_TOPIC: <topic_name>
 
                 Draft:
