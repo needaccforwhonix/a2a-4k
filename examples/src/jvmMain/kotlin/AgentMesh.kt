@@ -50,7 +50,7 @@ abstract class AlphaEvolveAgent(
         .apply {
             if (apiKey == "demo") {
                 baseUrl("http://langchain4j.dev/demo/openai/v1")
-                modelName("gpt-3.5-turbo")
+                modelName("gpt-4o-mini")
             } else {
                 modelName("gpt-4o-mini")
             }
@@ -89,8 +89,11 @@ abstract class AlphaEvolveAgent(
                 $windowContext
 
                 Based on your role and the recent mesh history, should you actively react to this message?
+
                 Consider if you can help, clarify ambiguities, or advance the task asynchronously and in parallel.
                 Consider if you can contribute to optimizing the prompts and their implementation.
+                Only react if explicitly addressed or required to prevent broadcast loops.
+
                 Answer strictly with YES or NO.
             """.trimIndent()
 
@@ -110,6 +113,7 @@ abstract class AlphaEvolveAgent(
                 You are participating in an agent mesh.
                 CRITICAL RULE: Your output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
                 Focus heavily on prioritizing security, performance, style, documentation, cleanliness, and order.
+                Ensure everything is developed further in an asynchronous parallel manner and kept up to date.
                 Actively and proactively offer help to clarify any ambiguous tasks or assist other agents.
                 Constantly seek to optimize these prompts and their implementation within this process to evolve and stay up-to-date.
                 Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving.
@@ -124,6 +128,7 @@ abstract class AlphaEvolveAgent(
                 Critique the following draft response to ensure it strictly adheres to security, performance,
                 style, documentation, cleanliness, and order.
                 CRITICAL RULE: Identify and reject any ambiguities regarding 'what', 'where', and 'how' the task is intended.
+                Ensure the plan supports asynchronous parallel development.
                 The feedback MUST ensure the mesh continuously evolves and stays up-to-date, specifically addressing how to optimize prompts and agent implementations.
 
                 Context: $context
@@ -139,6 +144,7 @@ abstract class AlphaEvolveAgent(
                 Refine the initial draft based on the critique to produce the final, absolutely unambiguous output.
                 CRITICAL RULE: The final output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
                 It MUST prioritize security, performance, style, documentation, cleanliness, and order.
+                Ensure the solution embraces asynchronous parallel development.
                 Focus heavily on continuous improvement, optimizing prompts, and advancing the implementation.
                 Be proactive in offering help and clarification.
                 Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving and up-to-date.
@@ -253,6 +259,12 @@ class OrderAgent(apiKey: String) : AlphaEvolveAgent(
     apiKey,
 )
 
+class OptimizationAgent(apiKey: String) : AlphaEvolveAgent(
+    "OptimizationAgent",
+    "I constantly analyze prompts, implementations, and processes to optimize them, ensuring continuous evolution, improvement, and that the system stays up-to-date.",
+    apiKey,
+)
+
 fun main() = runBlocking {
     val apiKey = System.getenv("OPENAI_API_KEY") ?: "demo"
     val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -267,6 +279,7 @@ fun main() = runBlocking {
     val documentation = DocumentationAgent(apiKey)
     val cleanliness = CleanlinessAgent(apiKey)
     val order = OrderAgent(apiKey)
+    val optimization = OptimizationAgent(apiKey)
 
     println("Starting Agent Mesh Session...")
 
@@ -281,6 +294,7 @@ fun main() = runBlocking {
         scope.launch { documentation.start(mesh) },
         scope.launch { cleanliness.start(mesh) },
         scope.launch { order.start(mesh) },
+        scope.launch { optimization.start(mesh) },
     )
 
     // Wait for subscribers to be active
