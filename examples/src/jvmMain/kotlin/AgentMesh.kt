@@ -94,10 +94,12 @@ abstract class AlphaEvolveAgent(
                 Consider if you can contribute to optimizing the prompts and their implementation.
                 Only react if explicitly addressed or required to prevent broadcast loops.
 
-                Answer strictly with YES or NO.
+                Use <thinking>...</thinking> tags to reason about your decision.
+                After your thinking process, answer strictly with [DECISION] YES or [DECISION] NO.
             """.trimIndent()
 
             val shouldReactResponse = callModel(evalPrompt).trim()
+            println("[$id] evalPrompt response: ${shouldReactResponse.replace("\n", " ")}")
             if (!shouldReactResponse.contains("[DECISION] YES", ignoreCase = true)) {
                 return // Ignored
             }
@@ -110,13 +112,16 @@ abstract class AlphaEvolveAgent(
             // Step 1: Reason and generate initial draft
             val draftPrompt = """
                 Analyze the following context and propose an initial response or action plan as $id with the role: $roleDescription.
-                You are participating in an agent mesh.
+                You are participating in an agent mesh where all outputs are routed as inputs to all agents asynchronously.
                 CRITICAL RULE: Your output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
                 Focus heavily on prioritizing security, performance, style, documentation, cleanliness, and order.
                 Ensure everything is developed further in an asynchronous parallel manner and kept up to date.
                 Actively and proactively offer help to clarify any ambiguous tasks or assist other agents.
                 Constantly seek to optimize these prompts and their implementation within this process to evolve and stay up-to-date.
                 Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving.
+
+                Use <thinking>...</thinking> tags to document your reasoning and Agentic Context Engineering step-by-step.
+                After your thinking process, provide your initial draft.
 
                 $context
             """.trimIndent()
