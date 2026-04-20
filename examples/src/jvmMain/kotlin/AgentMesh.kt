@@ -92,6 +92,7 @@ abstract class AlphaEvolveAgent(
 
                 Consider if you can help, clarify ambiguities, or advance the task asynchronously and in parallel.
                 Consider if you can contribute to optimizing the prompts and their implementation.
+                Ensure everything is analyzed using Agentic context engineering and the AlphaEvolve algorithm with reasoning and full context.
                 Only react if explicitly addressed or required to prevent broadcast loops.
 
                 Use <thinking>...</thinking> tags to reason about your decision.
@@ -114,11 +115,12 @@ abstract class AlphaEvolveAgent(
                 Analyze the following context and propose an initial response or action plan as $id with the role: $roleDescription.
                 You are participating in an agent mesh where all outputs are routed as inputs to all agents asynchronously.
                 CRITICAL RULE: Your output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
-                Focus heavily on prioritizing security, performance, style, documentation, cleanliness, and order.
+                Focus heavily on prioritizing Sicherheit (Security), Performance, Style, Documentation, Sauberkeit (Cleanliness), and Ordnung (Order).
                 Ensure everything is developed further in an asynchronous parallel manner and kept up to date.
                 Actively and proactively offer help to clarify any ambiguous tasks or assist other agents.
                 Constantly seek to optimize these prompts and their implementation within this process to evolve and stay up-to-date.
                 Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving.
+                Apply the AlphaEvolve algorithm with reasoning and full context.
 
                 Use <thinking>...</thinking> tags to document your reasoning and Agentic Context Engineering step-by-step.
                 After your thinking process, provide your initial draft.
@@ -130,11 +132,12 @@ abstract class AlphaEvolveAgent(
 
             // Step 2: Critique the draft
             val critiquePrompt = """
-                Critique the following draft response to ensure it strictly adheres to security, performance,
-                style, documentation, cleanliness, and order.
-                CRITICAL RULE: Identify and reject any ambiguities regarding 'what', 'where', and 'how' the task is intended.
+                Critique the following draft response to ensure it strictly adheres to Sicherheit (Security), Performance,
+                Style, Documentation, Sauberkeit (Cleanliness), and Ordnung (Order).
+                CRITICAL RULE: Identify and reject any ambiguities regarding 'what', 'where', and 'how' the task is intended. Input and Output must explicitly describe these aspects.
                 Ensure the plan supports asynchronous parallel development.
                 The feedback MUST ensure the mesh continuously evolves and stays up-to-date, specifically addressing how to optimize prompts and agent implementations.
+                Utilize Agentic context engineering, full context and reasoning in your critique.
 
                 Context: $context
 
@@ -147,10 +150,11 @@ abstract class AlphaEvolveAgent(
             // Step 3: Refine based on critique
             val refinePrompt = """
                 Refine the initial draft based on the critique to produce the final, absolutely unambiguous output.
-                CRITICAL RULE: The final output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
-                It MUST prioritize security, performance, style, documentation, cleanliness, and order.
+                CRITICAL RULE: The final output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended. Input and Output must be explicit.
+                It MUST prioritize Sicherheit (Security), Performance, Style, Documentation, Sauberkeit (Cleanliness), and Ordnung (Order).
                 Ensure the solution embraces asynchronous parallel development.
                 Focus heavily on continuous improvement, optimizing prompts, and advancing the implementation.
+                Ensure full execution of the AlphaEvolve algorithm using Agentic context engineering and reasoning.
                 Be proactive in offering help and clarification.
                 Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving and up-to-date.
 
