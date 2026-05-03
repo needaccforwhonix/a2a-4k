@@ -120,6 +120,11 @@ abstract class AlphaEvolveAgent(
                 Constantly seek to optimize these prompts and their implementation within this process to evolve and stay up-to-date.
                 Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving.
 
+                Structure your output cleanly, identifying:
+                - WHAT is intended
+                - WHERE it should be applied
+                - HOW the task is executed
+
                 Use <thinking>...</thinking> tags to document your reasoning and Agentic Context Engineering step-by-step.
                 After your thinking process, provide your initial draft.
 
@@ -155,9 +160,14 @@ abstract class AlphaEvolveAgent(
                 Ensure your actions promote asynchronous, parallel development to keep the system continuously evolving and up-to-date.
 
                 CRITICAL DIRECTIVES:
-                1. The final output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended.
+                1. The final output MUST explicitly and unambiguously describe 'what', 'where', and 'how' the task is intended using a clear structure.
                 2. It MUST synthesize and elevate the core values: Sicherheit (Security), Performance, Style, Documentation, Sauberkeit (Cleanliness), and Ordnung (Order).
                 3. Ensure the solution fully embraces asynchronous parallel development and continuous evolutionary improvement.
+
+                Structure your output cleanly, identifying:
+                - WHAT is intended
+                - WHERE it should be applied
+                - HOW the task is executed
 
                 Use <thinking>...</thinking> tags to process the critique and plan the final synthesis.
                 After your thinking process, provide the final response.
