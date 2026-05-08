@@ -90,8 +90,8 @@ abstract class AlphaEvolveAgent(
 
                 Based on your role and the recent mesh history, should you actively react to this message?
 
-                Consider if you can help, clarify ambiguities, or advance the task asynchronously and in parallel.
-                Consider if you can contribute to optimizing the prompts and their implementation.
+                Consider if you can help, clarify ambiguities (ensure 'what', 'where', and 'how' are explicitly defined), or advance the task asynchronously and in parallel.
+                Consider if you can contribute to optimizing the prompts and their implementation to keep the system continuously evolving.
                 Only react if explicitly addressed or required to prevent broadcast loops.
 
                 Use <thinking>...</thinking> tags to reason about your decision.
