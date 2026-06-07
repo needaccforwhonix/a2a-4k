@@ -44,7 +44,7 @@ class BasicTaskManagerTest {
     @Test
     fun `test onSendTask creates a new task when it does not exist`() = runBlocking {
         // Given
-        val taskId = "new-task-123"
+        val taskId = "new-my-job-123"
         val sessionId = "session-123"
         val requestId = StringValue("req-456")
         val textPart = TextPart(text = "Hello", metadata = emptyMap())
@@ -75,7 +75,7 @@ class BasicTaskManagerTest {
     @Test
     fun `test onSendTask updates an existing task`() = runBlocking {
         // Given
-        val taskId = "existing-task-123"
+        val taskId = "existing-my-job-123"
         val sessionId = "session-123"
         val requestId = StringValue("req-789")
 
@@ -142,7 +142,7 @@ class BasicTaskManagerTest {
     @Test
     fun `test onCancelTask returns task not cancelable error for existing task`() = runBlocking {
         // Given
-        val taskId = "existing-task-456"
+        val taskId = "existing-my-job-456"
         val sessionId = "session-456"
         val requestId = StringValue("req-cancel-existing")
 
@@ -179,7 +179,7 @@ class BasicTaskManagerTest {
     @Test
     fun `test onSetTaskPushNotification sets push notification for existing task`() = runBlocking {
         // Given
-        val taskId = "existing-task-789"
+        val taskId = "existing-my-job-789"
         val sessionId = "session-789"
         val requestId = StringValue("req-push")
 
@@ -218,7 +218,7 @@ class BasicTaskManagerTest {
     @Test
     fun `test onGetTaskPushNotification returns push notification for existing task`() = runBlocking {
         // Given
-        val taskId = "existing-task-push"
+        val taskId = "existing-my-job-push"
         val sessionId = "session-push"
         val requestId = StringValue("req-get-push")
 
@@ -264,7 +264,7 @@ class BasicTaskManagerTest {
     @Test
     fun `test onSendTaskSubscribe creates a new task and returns a flow`() = runBlocking {
         // Given
-        val taskId = "streaming-task-123"
+        val taskId = "streaming-my-job-123"
         val sessionId = "session-stream"
         val requestId = StringValue("req-stream")
         val textPart = TextPart(text = "Hello streaming", metadata = emptyMap())

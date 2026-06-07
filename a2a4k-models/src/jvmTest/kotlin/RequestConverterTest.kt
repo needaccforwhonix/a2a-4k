@@ -19,7 +19,7 @@ class RequestConverterTest {
                 "id": "123",
                 "method": "tasks/cancel",
                 "params": {
-                    "id": "task-123",
+                    "id": "my-job-123",
                     "metadata": {}
                 }
             }
@@ -32,7 +32,7 @@ class RequestConverterTest {
         assertIs<CancelTaskRequest>(result)
         assertEquals("2.0", result.jsonrpc)
         assertEquals("123", (result.id as StringValue).value)
-        assertEquals("task-123", result.params.id)
+        assertEquals("my-job-123", result.params.id)
     }
 
     @Test
@@ -44,7 +44,7 @@ class RequestConverterTest {
                 "id": "456",
                 "method": "tasks/get",
                 "params": {
-                    "id": "task-456",
+                    "id": "my-job-456",
                     "historyLength": 10,
                     "metadata": {}
                 }
@@ -58,7 +58,7 @@ class RequestConverterTest {
         assertIs<GetTaskRequest>(result)
         assertEquals("2.0", result.jsonrpc)
         assertEquals("456", (result.id as StringValue).value)
-        assertEquals("task-456", result.params.id)
+        assertEquals("my-job-456", result.params.id)
         assertEquals(10, result.params.historyLength)
     }
 
@@ -106,7 +106,7 @@ class RequestConverterTest {
                 "id": "789",
                 "method": "tasks/get",
                 "params": {
-                    "id": "task-789"
+                    "id": "my-job-789"
                 },
             }
         """.trimIndent()

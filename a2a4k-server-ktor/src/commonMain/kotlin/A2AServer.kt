@@ -49,7 +49,7 @@ class A2AServer(
     private val agentCard: AgentCard,
 
     /**
-     * The task manager responsible for handling task-related operations such as
+     * The task manager responsible for handling my-job-related operations such as
      * creating, retrieving, and canceling tasks.
      */
     private val taskManager: TaskManager,

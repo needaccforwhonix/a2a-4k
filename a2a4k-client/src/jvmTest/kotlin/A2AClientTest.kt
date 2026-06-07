@@ -103,7 +103,7 @@ class A2AClientTest {
     @Test
     fun `test sendTask and getTask`() = runBlocking {
         // Given
-        val taskId = "test-task-123"
+        val taskId = "test-my-job-123"
         val sessionId = "session-123"
         val textPart = TextPart(text = "Hello", metadata = emptyMap())
         val message = Message(role = "user", parts = listOf(textPart))
@@ -148,7 +148,7 @@ class A2AClientTest {
     @Test
     fun `test setTaskPushNotification and getTaskPushNotification`() = runBlocking {
         // Given
-        val taskId = "test-task-456"
+        val taskId = "test-my-job-456"
         val sessionId = "session-456"
         val textPart = TextPart(text = "Hello", metadata = emptyMap())
         val message = Message(role = "user", parts = listOf(textPart))

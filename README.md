@@ -123,7 +123,7 @@ fun main() = runBlocking {
 
         // Send a task to the Agent
         val response = client.sendTask(
-            taskId = "task-123",
+            taskId = "my-job-123",
             sessionId = "session-456",
             message = message
         )
