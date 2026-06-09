@@ -53,7 +53,7 @@ fun main() = runBlocking {
         val message = "Hello, Agent!".toUserMessage()
 
         // Send a task to the Agent
-        val response = client.sendTask(taskId = "task-123", sessionId = "session-456", message = message)
+        val response = client.sendTask(taskId = "job-123", sessionId = "session-456", message = message)
 
         // Process the response
         if (response.result != null) {

@@ -19,7 +19,7 @@ class TaskTest {
     fun `test Task round-trip serialization`() {
         // Given
         val originalTask = Task(
-            id = "task-12345",
+            id = "job-12345",
             sessionId = "session-67890",
             status = TaskStatus(
                 state = TaskState.WORKING,
@@ -65,7 +65,7 @@ class TaskTest {
     fun `test Task minimal serialization`() {
         // Given
         val minimalTask = Task(
-            id = "task-minimal",
+            id = "job-minimal",
             status = TaskStatus(
                 state = TaskState.SUBMITTED,
             ),
@@ -89,7 +89,7 @@ class TaskTest {
     fun `test TaskStatusUpdateEvent round-trip serialization`() {
         // Given
         val originalEvent = TaskStatusUpdateEvent(
-            id = "task-update-123",
+            id = "job-update-123",
             status = TaskStatus(
                 state = TaskState.COMPLETED,
                 message = Message(
@@ -118,7 +118,7 @@ class TaskTest {
     fun `test TaskArtifactUpdateEvent round-trip serialization`() {
         // Given
         val originalEvent = TaskArtifactUpdateEvent(
-            id = "task-artifact-123",
+            id = "job-artifact-123",
             artifact = Artifact(
                 name = "image-artifact",
                 description = "Generated image artifact",

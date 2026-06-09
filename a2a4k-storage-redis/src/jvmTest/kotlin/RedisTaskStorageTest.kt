@@ -31,7 +31,7 @@ class RedisTaskStorageTest : TestBase() {
     fun testStoreAndFetchTask(): Unit = runBlocking {
         // Create a test task
         val task = Task(
-            id = "test-task-1",
+            id = "test-job-1",
             sessionId = "test-session",
             status = TaskStatus(
                 state = TaskState.SUBMITTED,
@@ -42,11 +42,11 @@ class RedisTaskStorageTest : TestBase() {
         storage.store(task)
 
         // Fetch the task
-        val fetchedTask = storage.fetch("test-task-1")
+        val fetchedTask = storage.fetch("test-job-1")
 
         // Verify the task was stored and retrieved correctly
         assertNotNull(fetchedTask)
-        assertEquals("test-task-1", fetchedTask.id)
+        assertEquals("test-job-1", fetchedTask.id)
     }
 
     @Test
@@ -62,7 +62,7 @@ class RedisTaskStorageTest : TestBase() {
     fun testStoreAndFetchNotificationConfig(): Unit = runBlocking {
         // Create a test task
         val task = Task(
-            id = "test-task-2",
+            id = "test-job-2",
             sessionId = "test-session",
             status = TaskStatus(
                 state = TaskState.SUBMITTED,
@@ -79,10 +79,10 @@ class RedisTaskStorageTest : TestBase() {
         )
 
         // Store the notification config
-        storage.storeNotificationConfig("test-task-2", config)
+        storage.storeNotificationConfig("test-job-2", config)
 
         // Fetch the notification config
-        val fetchedConfig = storage.fetchNotificationConfig("test-task-2")
+        val fetchedConfig = storage.fetchNotificationConfig("test-job-2")
 
         // Verify the config was stored and retrieved correctly
         assertNotNull(fetchedConfig)
@@ -93,7 +93,7 @@ class RedisTaskStorageTest : TestBase() {
     fun testFetchNonExistentNotificationConfig(): Unit = runBlocking {
         // Create a test task
         val task = Task(
-            id = "test-task-3",
+            id = "test-job-3",
             sessionId = "test-session",
             status = TaskStatus(
                 state = TaskState.SUBMITTED,
@@ -104,7 +104,7 @@ class RedisTaskStorageTest : TestBase() {
         storage.store(task)
 
         // Fetch a non-existent notification config
-        val config = storage.fetchNotificationConfig("test-task-3")
+        val config = storage.fetchNotificationConfig("test-job-3")
 
         // Verify the config is null
         assertNull(config)
