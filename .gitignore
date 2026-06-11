@@ -55,4 +55,5 @@ bin/
 /docs/.docusaurus/
 /docs-src/node_modules/
 /docs-src/.docusaurus/
-.idea/
+.idea/mesh_output.log
+mesh_output.log
