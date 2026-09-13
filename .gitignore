@@ -1,60 +1,51 @@
-# SPDX-FileCopyrightText: 2025
+
 #
-# SPDX-License-Identifier: CC0-1.0
-
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-.idea
-*.iws
-*.iml
-*.ipr
-*.xml
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
-
-### Eclipse ###
+**/application-secret.yml
 .apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
 bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
+build/
+.classpath
 /dist/
+/docs/.docusaurus/
+/docs/node_modules/
+/docs-src/.docusaurus/
+/docs-src/node_modules/
+.DS_Store
+### Eclipse ###
+.factorypath
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+.idea
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/libraries/
+.idea/modules.xml
+*.iml
+### IntelliJ IDEA ###
+*.ipr
+*.iws
+.kotlin
+### Mac OS ###
+mesh_output.log
+/nbbuild/
 /nbdist/
 /.nb-gradle/
-
-### VS Code ###
-.vscode/
-
-### Mac OS ###
-.DS_Store
-
+/nbproject/private/
+### NetBeans ###
+out/
+.project
 ### Secrets ###
-**/application-secret.yml
-
-.kotlin
-/docs/node_modules/
-/docs/.docusaurus/
-/docs-src/node_modules/
-/docs-src/.docusaurus/
-mesh_output.log
-
-mesh_output.log
+.settings
+# SPDX-FileCopyrightText: 2025
+# SPDX-License-Identifier: CC0-1.0
+.springBeans
+!**/src/main/**/bin/
+!**/src/main/**/build/
+!**/src/main/**/out/
+!**/src/test/**/bin/
+!**/src/test/**/build/
+!**/src/test/**/out/
+.sts4-cache
+.vscode/
+### VS Code ###
+*.xml

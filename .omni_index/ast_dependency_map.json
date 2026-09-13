@@ -1,0 +1,855 @@
+[
+  {
+    "file": ".editorconfig",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "gradlew",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "settings.gradle.kts",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "run_agent_mesh.sh",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "CODEOWNERS",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "gradle.properties",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "gradlew.bat",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "REUSE.toml",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "README.md",
+    "dependencies": [
+      "io.github.a2a_4k.A2AClient",
+      "kotlinx.coroutines.runBlocking",
+      "io.github.a2a_4k.",
+      "io.github.a2a_4k.TaskHandler",
+      "io.github.a2a_4k.models."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "CODE_OF_CONDUCT.md",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "build.gradle.kts",
+    "dependencies": [
+      "org.jetbrains.kotlin.gradle.tasks.KotlinCompile",
+      "java.lang.System.getenv",
+      "java.net.URI",
+      "java.io.BufferedReader",
+      "java.io.InputStreamReader",
+      "com.vanniktech.maven.publish.SonatypeHost"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": ".gitignore",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "gradle/libs.versions.toml",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "gradle/wrapper/gradle-wrapper.properties",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/build.gradle.kts",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/Skill.kt",
+    "dependencies": [
+      "kotlinx.serialization.Serializable"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/JsonRpcRequest.kt",
+    "dependencies": [
+      "kotlinx.serialization.ExperimentalSerializationApi",
+      "kotlinx.serialization.SerialName",
+      "kotlinx.serialization.Serializable",
+      "kotlinx.serialization.json.JsonClassDiscriminator"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/JsonRpcResponse.kt",
+    "dependencies": [
+      "kotlinx.serialization.Serializable"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/RequestConverter.kt",
+    "dependencies": [
+      "kotlinx.serialization.modules.SerializersModule",
+      "kotlinx.serialization.json.Json"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/Task.kt",
+    "dependencies": [
+      "kotlinx.datetime.",
+      "io.github.a2a_4k.models.TaskState.COMPLETED",
+      "kotlinx.serialization.Serializable",
+      "io.github.a2a_4k.models.TaskState.FAILED",
+      "io.github.a2a_4k.models.TaskState.WORKING",
+      "kotlinx.serialization.SerialName"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/Notifications.kt",
+    "dependencies": [
+      "kotlinx.serialization.Serializable"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/Messages.kt",
+    "dependencies": [
+      "kotlinx.serialization.ExperimentalSerializationApi",
+      "kotlinx.serialization.SerialName",
+      "kotlinx.serialization.Serializable",
+      "kotlinx.serialization.json.JsonClassDiscriminator"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/JsonRpcError.kt",
+    "dependencies": [
+      "kotlinx.serialization.Serializable"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/AgentCard.kt",
+    "dependencies": [
+      "kotlinx.serialization.Serializable"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/Extensions.kt",
+    "dependencies": [
+      "kotlinx.serialization.modules.SerializersModule",
+      "kotlinx.serialization.json.Json"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/commonMain/kotlin/Types.kt",
+    "dependencies": [
+      "kotlinx.serialization.Serializable",
+      "kotlinx.serialization.json.contentOrNull",
+      "kotlinx.serialization.KSerializer",
+      "kotlinx.serialization.descriptors.element",
+      "kotlinx.serialization.json.jsonPrimitive",
+      "kotlinx.serialization.encoding.Decoder",
+      "kotlinx.serialization.encoding.Encoder",
+      "kotlinx.serialization.json.JsonDecoder",
+      "kotlinx.serialization.json.intOrNull",
+      "kotlinx.serialization.descriptors.buildClassSerialDescriptor"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/jvmTest/kotlin/AgentCardTest.kt",
+    "dependencies": [
+      "org.junit.jupiter.api.Test",
+      "kotlin.test.assertEquals",
+      "kotlin.test.assertNull",
+      "kotlin.test.assertNotNull"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/jvmTest/kotlin/TaskTest.kt",
+    "dependencies": [
+      "kotlin.test.assertEquals",
+      "org.junit.jupiter.api.Test",
+      "kotlinx.serialization.json.Json",
+      "kotlin.test.assertNotNull"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-models/src/jvmTest/kotlin/RequestConverterTest.kt",
+    "dependencies": [
+      "kotlin.test.assertIs",
+      "org.junit.jupiter.api.assertThrows",
+      "org.junit.jupiter.api.Test",
+      "kotlin.test.assertEquals"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "examples/build.gradle.kts",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "examples/src/jvmMain/resources/log4j.properties",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "examples/src/jvmMain/kotlin/AgentMesh.kt",
+    "dependencies": [
+      "kotlinx.serialization.Serializable",
+      "java.util.concurrent.CopyOnWriteArrayList",
+      "dev.langchain4j.model.openai.OpenAiChatModel",
+      "kotlinx.coroutines.flow.",
+      "kotlinx.coroutines."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "examples/src/jvmMain/kotlin/BasicTaskHandler.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.TaskStatus",
+      "kotlinx.coroutines.flow.flow",
+      "io.github.a2a_4k.models.Task",
+      "io.github.a2a_4k.models.TextPart",
+      "io.github.a2a_4k.models.Artifact",
+      "io.github.a2a_4k.models.TaskState",
+      "kotlinx.coroutines.runBlocking",
+      "io.github.a2a_4k.models.Message",
+      "kotlinx.coroutines.flow.Flow",
+      "io.github.a2a_4k.models.assistantMessage"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "examples/src/jvmMain/kotlin/ArcExample.kt",
+    "dependencies": [
+      "kotlinx.coroutines.delay",
+      "io.github.a2a_4k.arc.serveA2A",
+      "kotlinx.coroutines.runBlocking",
+      "io.github.a2a_4k.models.toUserMessage",
+      "org.eclipse.lmos.arc.agents.agents",
+      "org.eclipse.lmos.arc.agents.agent.Skill"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "examples/src/jvmMain/kotlin/AgentMeshExample.kt",
+    "dependencies": [
+      "kotlinx.coroutines.flow.flow",
+      "org.slf4j.LoggerFactory",
+      "java.util.concurrent.atomic.AtomicInteger",
+      "kotlin.random.Random",
+      "kotlinx.coroutines.flow.Flow",
+      "io.github.a2a_4k.models.",
+      "kotlinx.coroutines."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "examples/src/jvmMain/kotlin/Langchain4jExample.kt",
+    "dependencies": [
+      "kotlinx.coroutines.delay",
+      "io.github.a2a_4k.models.AgentCard",
+      "kotlinx.coroutines.runBlocking",
+      "io.github.a2a_4k.models.toUserMessage",
+      "io.github.a2a_4k.models.Message",
+      "dev.langchain4j.model.openai.OpenAiChatModel",
+      "io.github.a2a_4k.models.Capabilities"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server-arc/build.gradle.kts",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server-arc/src/jvmMain/kotlin/AgentServer.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.AgentCard",
+      "io.github.a2a_4k.A2AServer",
+      "org.eclipse.lmos.arc.agents.ArcAgents",
+      "org.eclipse.lmos.arc.agents.ConversationAgent",
+      "io.github.a2a_4k.models.Capabilities",
+      "io.github.a2a_4k.models.Skill",
+      "io.github.a2a_4k.BasicTaskManager"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server-arc/src/commonMain/kotlin/ContextProvider.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.Task",
+      "org.eclipse.lmos.arc.agents.dsl.extensions.SystemContextProvider",
+      "org.eclipse.lmos.arc.agents.dsl.extensions.SystemContext",
+      "org.eclipse.lmos.arc.agents.dsl.extensions.UserProfileProvider",
+      "org.eclipse.lmos.arc.agents.dsl.extensions.UserProfile"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server-arc/src/commonMain/kotlin/AgentTaskHandler.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.Task",
+      "io.github.a2a_4k.models.content",
+      "io.github.a2a_4k.emitArtifact",
+      "org.eclipse.lmos.arc.agents.conversation.AssistantMessage",
+      "org.eclipse.lmos.arc.agents.conversation.Conversation",
+      "io.github.a2a_4k.emitFailed",
+      "org.eclipse.lmos.arc.agents.conversation.UserMessage",
+      "io.github.a2a_4k.emitAssistantCompleted",
+      "kotlinx.coroutines.flow.Flow",
+      "org.eclipse.lmos.arc.agents.User",
+      "org.eclipse.lmos.arc.core.Success",
+      "org.eclipse.lmos.arc.agents.AgentProvider",
+      "io.github.a2a_4k.TaskHandler",
+      "org.eclipse.lmos.arc.agents.ConversationAgent",
+      "kotlin.uuid.ExperimentalUuidApi",
+      "kotlin.uuid.Uuid",
+      "kotlinx.coroutines.flow.flow",
+      "org.eclipse.lmos.arc.agents.agent.executeWithHandover",
+      "io.github.a2a_4k.TaskUpdate",
+      "org.eclipse.lmos.arc.agents.conversation.latest"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "LICENSES/CC-BY-4.0.txt",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "LICENSES/CC0-1.0.txt",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "LICENSES/Apache-2.0.txt",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-client/build.gradle.kts",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-client/src/commonMain/kotlin/A2AClient.kt",
+    "dependencies": [
+      "kotlinx.coroutines.flow.flow",
+      "io.ktor.client.",
+      "kotlinx.coroutines.cancel",
+      "io.ktor.client.plugins.",
+      "io.ktor.http.",
+      "io.ktor.client.statement.",
+      "io.ktor.client.request.",
+      "kotlinx.coroutines.flow.Flow",
+      "io.ktor.client.plugins.sse.",
+      "io.ktor.utils.io.core.",
+      "kotlin.uuid.Uuid",
+      "io.github.a2a_4k.models."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-client/src/commonMain/kotlin/Exceptions.kt",
+    "dependencies": [
+      "io.ktor.client.engine.cio.",
+      "io.ktor.client.",
+      "io.ktor.client.plugins.",
+      "io.ktor.http.",
+      "io.ktor.serialization.kotlinx.json.",
+      "io.ktor.client.plugins.contentnegotiation.",
+      "io.ktor.client.request.",
+      "io.ktor.client.statement.",
+      "io.ktor.client.plugins.sse.",
+      "io.github.a2a_4k.models."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-client/src/jvmTest/kotlin/A2AClientTest.kt",
+    "dependencies": [
+      "org.junit.jupiter.api.BeforeEach",
+      "kotlinx.coroutines.flow.flowOf",
+      "org.junit.jupiter.api.Test",
+      "org.junit.jupiter.api.AfterEach",
+      "kotlin.test.assertNull",
+      "kotlinx.coroutines.runBlocking",
+      "kotlin.test.assertEquals",
+      "kotlinx.coroutines.flow.Flow",
+      "kotlin.test.assertNotNull",
+      "io.github.a2a_4k.models."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/build.gradle.kts",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/jvmMain/kotlin/Common.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.Task",
+      "kotlinx.coroutines.channels.Channel",
+      "io.github.a2a_4k.models.PushNotificationConfig",
+      "java.util.concurrent.ConcurrentHashMap",
+      "java.util.Collections.synchronizedList"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/jvmMain/kotlin/Logger.kt",
+    "dependencies": [
+      "kotlin.reflect.KClass",
+      "org.slf4j.LoggerFactory"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/jvmMain/kotlin/storage/TaskStorageLoader.kt",
+    "dependencies": [
+      "io.github.a2a_4k.InMemoryTaskStorage",
+      "java.util.",
+      "org.slf4j.LoggerFactory"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/commonMain/kotlin/TaskManager.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.GetTaskResponse",
+      "kotlinx.coroutines.flow.Flow",
+      "io.ktor.util.",
+      "io.github.a2a_4k.models.",
+      "kotlinx.coroutines."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/commonMain/kotlin/Common.kt",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/commonMain/kotlin/InMemoryTaskStorage.kt",
+    "dependencies": [
+      "io.github.a2a_4k.storage.TaskStorage",
+      "io.github.a2a_4k.models.Task",
+      "io.github.a2a_4k.models.PushNotificationConfig"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/commonMain/kotlin/TaskHandler.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.TaskState.COMPLETED",
+      "kotlinx.coroutines.flow.FlowCollector",
+      "kotlinx.coroutines.flow.Flow",
+      "io.github.a2a_4k.models."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/commonMain/kotlin/BasicTaskManager.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.InternalError",
+      "io.github.a2a_4k.models.CancelTaskResponse",
+      "io.github.a2a_4k.models.Task",
+      "io.github.a2a_4k.models.TaskResubscriptionRequest",
+      "io.github.a2a_4k.models.TaskStatus",
+      "io.github.a2a_4k.models.TaskStatusUpdateEvent",
+      "io.github.a2a_4k.models.CancelTaskRequest",
+      "io.github.a2a_4k.notifications.BasicNotificationPublisher",
+      "io.github.a2a_4k.models.TaskNotFoundError",
+      "io.github.a2a_4k.models.GetTaskPushNotificationRequest",
+      "io.github.a2a_4k.models.SetTaskPushNotificationResponse",
+      "io.github.a2a_4k.models.SendTaskResponse",
+      "io.github.a2a_4k.storage.loadTaskStorage",
+      "io.github.a2a_4k.models.TaskQueryParams",
+      "io.github.a2a_4k.models.TaskPushNotificationConfig",
+      "io.github.a2a_4k.models.TaskNotCancelableError",
+      "io.github.a2a_4k.models.GetTaskResponse",
+      "kotlinx.coroutines.flow.Flow",
+      "io.github.a2a_4k.models.JsonRpcError",
+      "io.github.a2a_4k.models.SendTaskRequest",
+      "io.github.a2a_4k.models.SendTaskStreamingRequest",
+      "io.github.a2a_4k.models.TaskStreamingResult",
+      "kotlinx.coroutines.channels.Channel",
+      "io.github.a2a_4k.models.SendTaskStreamingResponse",
+      "io.github.a2a_4k.models.TaskIdParams",
+      "kotlin.uuid.Uuid",
+      "io.github.a2a_4k.models.TaskArtifactUpdateEvent",
+      "kotlinx.coroutines.flow.flow",
+      "io.github.a2a_4k.storage.TaskStorage",
+      "io.github.a2a_4k.models.StringOrInt",
+      "io.github.a2a_4k.models.TaskState",
+      "io.github.a2a_4k.models.TaskSendParams",
+      "io.github.a2a_4k.models.GetTaskRequest",
+      "io.github.a2a_4k.models.PushNotificationConfig",
+      "io.github.a2a_4k.models.SetTaskPushNotificationRequest",
+      "io.github.a2a_4k.models.GetTaskPushNotificationResponse",
+      "io.github.a2a_4k.notifications.NotificationPublisher"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/commonMain/kotlin/Logger.kt",
+    "dependencies": [
+      "kotlin.reflect.KClass"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/commonMain/kotlin/storage/TaskStorage.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.Task",
+      "io.github.a2a_4k.models.PushNotificationConfig"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/commonMain/kotlin/storage/TaskStorageProvider.kt",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/commonMain/kotlin/notifications/BasicNotificationPublisher.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.toJson",
+      "io.github.a2a_4k.models.Task",
+      "io.github.a2a_4k.createLogger",
+      "io.ktor.client.",
+      "io.github.a2a_4k.models.a2aJson",
+      "io.ktor.client.plugins.",
+      "io.ktor.http.",
+      "io.github.a2a_4k.models.PushNotificationConfig",
+      "io.ktor.serialization.kotlinx.json.",
+      "io.ktor.client.plugins.contentnegotiation.",
+      "io.ktor.client.request."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/commonMain/kotlin/notifications/NotificationPublisher.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.Task",
+      "io.github.a2a_4k.models.PushNotificationConfig"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/jvmTest/kotlin/TestModels.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.TaskStatus",
+      "io.github.a2a_4k.models.Task",
+      "kotlinx.coroutines.flow.flowOf",
+      "io.github.a2a_4k.models.AgentCard",
+      "io.github.a2a_4k.models.TaskState",
+      "io.github.a2a_4k.models.Authentication",
+      "kotlinx.coroutines.flow.Flow",
+      "io.github.a2a_4k.models.Capabilities",
+      "io.github.a2a_4k.models.Skill"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server/src/jvmTest/kotlin/BasicTaskManagerTest.kt",
+    "dependencies": [
+      "org.junit.jupiter.api.BeforeEach",
+      "org.junit.jupiter.api.Test",
+      "kotlin.test.assertNull",
+      "kotlinx.coroutines.runBlocking",
+      "kotlinx.coroutines.flow.first",
+      "kotlin.test.assertEquals",
+      "kotlin.test.assertNotNull",
+      "io.github.a2a_4k.models."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-storage-redis/build.gradle.kts",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-storage-redis/src/jvmMain/resources/META-INF/services/org.a2a4k.storage.TaskStorageProvider",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-storage-redis/src/jvmMain/kotlin/RedisTaskStorage.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.toJson",
+      "kotlinx.coroutines.reactor.awaitSingle",
+      "io.github.a2a_4k.models.Task",
+      "io.github.a2a_4k.storage.TaskStorage",
+      "io.lettuce.core.RedisClient",
+      "io.github.a2a_4k.models.a2aJson",
+      "kotlinx.coroutines.reactor.awaitSingleOrNull",
+      "io.lettuce.core.cluster.RedisClusterClient",
+      "io.github.a2a_4k.models.fromJson",
+      "io.github.a2a_4k.models.PushNotificationConfig",
+      "io.lettuce.core.AbstractRedisClient"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-storage-redis/src/jvmMain/kotlin/EnvTaskStorageProvider.kt",
+    "dependencies": [
+      "io.lettuce.core.cluster.RedisClusterClient",
+      "io.lettuce.core.RedisURI",
+      "io.github.a2a_4k.storage.TaskStorage",
+      "io.github.a2a_4k.storage.TaskStorageProvider"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-storage-redis/src/jvmTest/kotlin/TestBase.kt",
+    "dependencies": [
+      "org.testcontainers.utility.DockerImageName",
+      "org.testcontainers.junit.jupiter.Container",
+      "io.lettuce.core.RedisClient",
+      "org.testcontainers.junit.jupiter.Testcontainers",
+      "com.redis.testcontainers.RedisContainer"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-storage-redis/src/jvmTest/kotlin/RedisTaskStorageTest.kt",
+    "dependencies": [
+      "org.junit.jupiter.api.BeforeEach",
+      "org.junit.jupiter.api.Test",
+      "org.junit.jupiter.api.AfterEach",
+      "kotlin.test.assertNull",
+      "kotlinx.coroutines.runBlocking",
+      "kotlin.test.assertEquals",
+      "kotlin.test.assertNotNull",
+      "io.github.a2a_4k.RedisTaskStorage",
+      "io.github.a2a_4k.models."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server-ktor/build.gradle.kts",
+    "dependencies": [],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server-ktor/src/commonMain/kotlin/A2AServer.kt",
+    "dependencies": [
+      "java.util.concurrent.atomic.AtomicReference",
+      "io.ktor.server.routing.",
+      "io.github.a2a_4k.models.AgentCard",
+      "io.ktor.sse.",
+      "org.slf4j.LoggerFactory",
+      "io.ktor.server.application.",
+      "io.ktor.http.",
+      "io.ktor.server.response.",
+      "io.ktor.server.engine.",
+      "io.ktor.server.request.",
+      "io.ktor.server.sse.",
+      "io.ktor.server.netty."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server-ktor/src/commonMain/kotlin/A2AModule.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.InternalError",
+      "io.github.a2a_4k.models.TaskResubscriptionRequest",
+      "io.github.a2a_4k.models.CancelTaskRequest",
+      "io.ktor.server.application.",
+      "io.github.a2a_4k.models.MethodNotFoundError",
+      "io.github.a2a_4k.models.InvalidRequestError",
+      "kotlinx.serialization.SerializationException",
+      "io.github.a2a_4k.models.UnknownMethodRequest",
+      "io.ktor.server.plugins.cors.routing.",
+      "io.github.a2a_4k.models.GetTaskPushNotificationRequest",
+      "io.github.a2a_4k.models.AgentCard",
+      "org.slf4j.LoggerFactory",
+      "io.ktor.http.",
+      "io.ktor.sse.",
+      "io.github.a2a_4k.models.SendTaskRequest",
+      "io.ktor.server.routing.",
+      "io.github.a2a_4k.models.SendTaskStreamingRequest",
+      "io.github.a2a_4k.models.JsonParseError",
+      "io.github.a2a_4k.models.toJsonRpcRequest",
+      "io.github.a2a_4k.models.toJson",
+      "io.github.a2a_4k.models.ErrorResponse",
+      "io.github.a2a_4k.models.GetTaskRequest",
+      "io.ktor.server.response.",
+      "io.github.a2a_4k.models.SetTaskPushNotificationRequest",
+      "io.ktor.server.sse.",
+      "io.ktor.server.request."
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server-ktor/src/jvmTest/kotlin/TestModels.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.TaskStatus",
+      "io.github.a2a_4k.models.Task",
+      "kotlinx.coroutines.flow.flowOf",
+      "io.github.a2a_4k.models.AgentCard",
+      "io.github.a2a_4k.models.TaskState",
+      "io.github.a2a_4k.models.Authentication",
+      "kotlinx.coroutines.flow.Flow",
+      "io.github.a2a_4k.models.Capabilities",
+      "io.github.a2a_4k.models.Skill"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  },
+  {
+    "file": "a2a4k-server-ktor/src/jvmTest/kotlin/A2AServerTest.kt",
+    "dependencies": [
+      "io.github.a2a_4k.models.CancelTaskResponse",
+      "io.ktor.client.engine.cio.",
+      "io.github.a2a_4k.models.CancelTaskRequest",
+      "kotlinx.coroutines.runBlocking",
+      "io.github.a2a_4k.models.Message",
+      "kotlin.test.assertEquals",
+      "kotlin.test.assertNotNull",
+      "io.github.a2a_4k.models.GetTaskPushNotificationRequest",
+      "io.github.a2a_4k.models.SetTaskPushNotificationResponse",
+      "io.github.a2a_4k.models.SendTaskResponse",
+      "io.github.a2a_4k.models.AgentCard",
+      "io.github.a2a_4k.models.TaskQueryParams",
+      "io.github.a2a_4k.models.TaskPushNotificationConfig",
+      "io.ktor.client.plugins.",
+      "io.ktor.http.",
+      "io.github.a2a_4k.models.GetTaskResponse",
+      "io.ktor.client.plugins.sse.",
+      "io.github.a2a_4k.models.SendTaskRequest",
+      "org.junit.jupiter.api.BeforeEach",
+      "io.github.a2a_4k.models.JsonRpcRequest",
+      "org.junit.jupiter.api.AfterEach",
+      "kotlin.test.assertNull",
+      "io.github.a2a_4k.models.TextPart",
+      "io.ktor.client.plugins.contentnegotiation.",
+      "io.ktor.client.statement.",
+      "io.github.a2a_4k.models.TaskIdParams",
+      "io.github.a2a_4k.models.StringValue",
+      "org.junit.jupiter.api.Test",
+      "io.ktor.client.",
+      "io.github.a2a_4k.models.TaskState",
+      "io.github.a2a_4k.models.TaskSendParams",
+      "io.github.a2a_4k.models.GetTaskRequest",
+      "io.github.a2a_4k.models.PushNotificationConfig",
+      "io.ktor.serialization.kotlinx.json.",
+      "io.ktor.client.request.",
+      "io.github.a2a_4k.models.SetTaskPushNotificationRequest",
+      "kotlinx.serialization.json.Json",
+      "io.github.a2a_4k.models.GetTaskPushNotificationResponse"
+    ],
+    "llama_nemotron_8b_status": "failed",
+    "gemini_embedding_2_status": "failed"
+  }
+]
