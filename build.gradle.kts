@@ -102,6 +102,7 @@ subprojects {
 
     repositories {
         // mavenLocal() This somehow causes with js compilation
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
         mavenCentral()
         google()
     }
@@ -121,6 +122,7 @@ dependencies {
 
 repositories {
     mavenLocal()
+    maven { url = uri("https://maven.aliyun.com/repository/public") }
     mavenCentral()
 }
 
