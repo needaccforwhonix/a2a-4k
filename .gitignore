@@ -26,7 +26,6 @@ build/
 *.iws
 .kotlin
 ### Mac OS ###
-mesh_output.log
 /nbbuild/
 /nbdist/
 /.nb-gradle/
