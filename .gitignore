@@ -48,3 +48,5 @@ out/
 .vscode/
 ### VS Code ###
 *.xml
+
+mesh_output.log
