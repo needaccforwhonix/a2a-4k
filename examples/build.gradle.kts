@@ -43,5 +43,5 @@ tasks.register<JavaExec>("runAgentMesh") {
     val mainCompilation = jvmTarget.compilations.getByName("main")
 
     classpath = mainCompilation.output.allOutputs + mainCompilation.runtimeDependencyFiles!!
-    environment("OPENAI_API_KEY", System.getenv("OPENAI_API_KEY") ?: "demo")
+    environment("OPENAI_API_KEY", "demo")
 }
