@@ -1,2 +1,1 @@
-#!/bin/bash
-./gradlew :examples:runAgentMesh
+OPENAI_API_KEY="demo" ./gradlew :examples:runAgentMesh --no-daemon
