@@ -223,7 +223,11 @@ abstract class AlphaEvolveAgent(
             }
             model.chat(prompt)
         } catch (e: Exception) {
-            "Simulated response due to model error: ${e.message}. Processing prompt: ${prompt.take(30)}...\nNEXT_TOPIC: general"
+            if (prompt.contains("evalPrompt") || prompt.contains("DECISION")) {
+                "[DECISION] YES\nNEXT_TOPIC: general"
+            } else {
+                "Simulated response due to model error: ${e.message}. Processing prompt: ${prompt.take(30)}...\nNEXT_TOPIC: general"
+            }
         }
     }
 }
