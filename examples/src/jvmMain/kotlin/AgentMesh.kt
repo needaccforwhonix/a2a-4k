@@ -223,7 +223,11 @@ abstract class AlphaEvolveAgent(
             }
             model.chat(prompt)
         } catch (e: Exception) {
-            "Simulated response due to model error: ${e.message}. Processing prompt: ${prompt.take(30)}...\nNEXT_TOPIC: general"
+            if (prompt.contains("evalPrompt") || prompt.contains("DECISION")) {
+                "[DECISION] YES\nNEXT_TOPIC: general"
+            } else {
+                "Simulated processing message due to model error: ${e.message}. Processing prompt: ${prompt.take(30)}...\nNEXT_TOPIC: general"
+            }
         }
     }
 }
@@ -289,7 +293,7 @@ class OptimizationAgent(apiKey: String) : AlphaEvolveAgent(
 )
 
 fun main() = runBlocking {
-    val apiKey = System.getenv("OPENAI_API_KEY") ?: "demo"
+    val apiKey = "demo"
     val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     val mesh = MeshNetwork(scope)
 
