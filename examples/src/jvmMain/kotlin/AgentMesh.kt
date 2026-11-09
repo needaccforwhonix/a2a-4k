@@ -289,7 +289,7 @@ class OptimizationAgent(apiKey: String) : AlphaEvolveAgent(
 )
 
 fun main() = runBlocking {
-    val apiKey = System.getenv("OPENAI_API_KEY") ?: "demo"
+    val apiKey = "demo"
     val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     val mesh = MeshNetwork(scope)
 
